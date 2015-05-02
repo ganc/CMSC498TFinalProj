@@ -1,0 +1,11 @@
+---
+title: "ACM_Final_Proj"
+author: "Alyster Alcudia, Cynthia Gan, Mihai Sirbu"
+date: "5/2/2015"
+output: pdf_document
+---
+
+
+```{r}
+data = read.csv("CMSC498TFinalProj/student-por.csv", sep=";", stringsAsFactors = TRUE)
+```
