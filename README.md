@@ -1,2 +1,5 @@
 # CMSC498TP4
-Project 4 for CMSC498T - Introduction to Data Science
+Final Project for CMSC498T - Introduction to Data Science
+
+Group ACM
+Alyster Alcudia, Cynthia Gan, Mihai Sirbu
