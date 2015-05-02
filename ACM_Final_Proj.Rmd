@@ -8,9 +8,13 @@ output: pdf_document
 ```{r, echo=FALSE, include=FALSE}
 install.packages("corrplot")
 install.packages("dplyr")
+install.packages("tidyr")
+install.packages("ggplot2")
 
 library(corrplot)
 library(dplyr)
+library(tidyr)
+library(ggplot2)
 ```
 
 ```{r}
@@ -20,7 +24,7 @@ data = as.tbl(read.csv("student-por.csv", sep=";", stringsAsFactors = TRUE))
 Let's rename the variables better!
 ```{r}
 
-rename_cols <- c(6, 11:12,16:21,23:24,26:28)
+rename_cols <- c(6, 11:12,16:21,23:24,26:28,31:33)
 
 colnames(data)[rename_cols] = c("parents_cohabit",
                                 "school_reason",
@@ -34,8 +38,11 @@ colnames(data)[rename_cols] = c("parents_cohabit",
                                 "has_romantic_partner",
                                 "family_relationship",
                                 "going_out_amount",
-                                "Weekday_Alcohol_Cons",
-                                "Weekend_Alcohol_Cons")
+                                "weekday_alcohol_cons",
+                                "weekend_alcohol_cons",
+                                "first_per_grade",
+                                "second_per_grade",
+                                "final_grade")
 
 ```
 Basic view of the data
@@ -48,12 +55,61 @@ Correlation betweens between different grades and
 numeric variables
 ```{r}
 data %>%
-  select(one_of("age","failures","family_relationship",
+  select(one_of("age","failures", "family_relationship",
                 "freetime","going_out_amount",
-                "Weekday_Alcohol_Cons",
-                "Weekend_Alcohol_Cons","absences",
-                "G1","G2","G3")) %>%
+                "weekday_alcohol_cons",
+                "weekend_alcohol_cons","absences",
+                "first_per_grade","second_per_grade",
+                "final_grade")) %>%
   cor() %>%
-  corrplot(method="circle",type="upper")
+  corrplot(method="number",type="upper")
+
+```
+
+In most cases, the correlations are not particularly strong. However there is medium and negative correlations between failures and grades. This makes intuitive sense given that a person who has failed previously probably has poorer school performance. Alcohol consumption during the week and during the week has a strong positive correlation, which is not surprising. Finally, the three types of grades are very strongly correlated with a correlation of anywhere between 0.83 to 0.92. This strong correlation suggests that we may be able to focus on one of the three types of grades (e.g. final grade) when trying to understand the factors that influence student performance. 
+
+Let's examine if gender seems to play a role in terms of the grade
+```{r}
+
+table(data$sex)
+
+long_grades <- data %>% 
+                gather(Grade_Type, Grade, 
+                       first_per_grade:final_grade)
+  
+long_grades %>%
+  ggplot(aes(x=Grade, fill=sex))+
+  geom_density(alpha=0.2, binwidth = 2, position = 'identity')+
+  facet_wrap(~Grade_Type)+
+  ggtitle("Density Plot across the three grades as a function of gender")
+```
+
+The plots don't indicate obvious differenes between genders in terms of grade performance. Let's just do a t.test between genders to see if we're missing something
+
+```{r}
+males_one <- long_grades %>% filter(sex=="M",Grade_Type=="first_per_grade")
+females_one <- long_grades %>% filter(sex=="F",Grade_Type=="first_per_grade")
+
+t.test(x=males_one$Grade,y=females_one$Grade,alternative="two.sided")
+
+males_two <- long_grades %>% filter(sex=="M",Grade_Type=="second_per_grade")
+females_two <- long_grades %>% filter(sex=="F",Grade_Type=="second_per_grade")
+
+t.test(x=males_two$Grade,y=females_two$Grade,alternative="two.sided")
+
+males_final <- long_grades %>% filter(sex=="M",Grade_Type=="final_grade")
+females_final <- long_grades %>% filter(sex=="F",Grade_Type=="final_grade")
+
+t.test(x=males_final$Grade,y=females_final$Grade,alternative="two.sided")
+
+```
+As it turns out, in all three cases, females had a signficantly higher grade than males as all three p values were less than 0.05. 
+
+Let's see if there are any other gender differences for some of the other variables!
+
+```{r}
+data %>%
+  ggplot()
+
 
 ```
