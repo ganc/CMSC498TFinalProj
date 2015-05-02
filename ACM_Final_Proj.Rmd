@@ -5,7 +5,14 @@ date: "5/2/2015"
 output: pdf_document
 ---
 
+```{r, echo=FALSE, include=FALSE}
+install.packages("corrplot")
+install.packages("dplyr")
+
+library(corrplot)
+library(dplyr)
+```
 
 ```{r}
-data = read.csv("CMSC498TFinalProj/student-por.csv", sep=";", stringsAsFactors = TRUE)
+data = as.tbl(read.csv("CMSC498TFinalProj/student-por.csv", sep=";", stringsAsFactors = TRUE))
 ```
