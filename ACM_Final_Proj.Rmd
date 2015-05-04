@@ -123,6 +123,26 @@ data %>%
 In most cases, the correlations are not particularly strong. However there is medium and negative correlations between failures and grades. This makes intuitive sense given that a person who has failed previously probably has poorer school performance. Alcohol consumption during the week has a strong positive correlation, which is not surprising. Finally, the three types of grades are very strongly correlated, with a correlation of anywhere between 0.83 to 0.92. This strong correlation suggests that we may be able to focus on one of the three types of grades (e.g. final grade) when trying to understand the factors that influence student performance. 
 
 
+What about correlations between family/home attributes? Any strong correlations between such variables can lead to misleading estimates when modeling the data.
+
+```{r}
+data %>%
+     select(urban_rural,
+            fam_size,
+            parents_cohabit,
+            mom_edu, dad_edu,
+            fam_edu_support,
+            family_relationship) %>%
+     mutate(urban_rural = ifelse(urban_rural=='Urban', 0, 1)) %>% 
+     mutate(fam_size = ifelse(fam_size=='<3', 0, 1)) %>%
+     mutate(parents_cohabit = ifelse(parents_cohabit=='Apart', 0, 1)) %>%
+     mutate(mom_job = as.numeric(factor(mom_job, ))) %>%
+     mutate(parents_cohabit = ifelse(parents_cohabit=='Apart', 0, 1)) %>%
+     mutate(fam_edu_support = fam_edu_support + 0) %>%
+  cor() %>%
+  corrplot(method="number",type="upper")
+```
+
 Gender and Grade  
 ----------------
 
