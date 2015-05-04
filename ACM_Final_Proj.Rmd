@@ -6,7 +6,7 @@ output: pdf_document
 ---
 
 ```{r, echo=FALSE, include=FALSE}
-for(i in c("corrplot", "dplyr", "tidyr", "ggplot2", "gridExtra")){
+for(i in c("corrplot", "car", "dplyr", "tidyr", "ggplot2", "gridExtra")){
     if( ! require( i , character.only = TRUE ) ){
       #  If package was not able to be loaded then re-install
       install.packages( i , dependencies = TRUE )
@@ -157,7 +157,7 @@ data %>%
                 "grade_one","grade_two",
                 "final_grade")) %>%
   cor() %>%
-  corrplot(method="number",type="upper")
+  corrplot(method="circle",type="lower")
 
 ```
 
@@ -179,7 +179,7 @@ data %>%
      mutate(parents_cohabit = ifelse(parents_cohabit=='Apart', 0, 1)) %>%
      mutate(fam_edu_support = fam_edu_support + 0) %>%
   cor() %>%
-  corrplot(method="number",type="upper")
+  corrplot(method="circle",type="lower")
 ```
 
 None of the binary data showed significant correlation to one another. It looks like the only candidate for a strong correlation is the relationship between the levels of education for each parent. When modeling the data, perhaps only one of these variables should be used.
@@ -242,7 +242,7 @@ The mean final grade of female students is `r mean(females_two$Grade)`, and the 
 As it turns out, in all three cases, females had a signficantly higher grade than males as all three p values were less than 0.05.  
 
 
-Let's see if there are any other gender differences for some of the other variables!
+Let's see if there are any other gender differences for some of the other variables! (Note: in cases where the scale is from 1 to 5, 1 represents lowest (e.g. very amount of studying) whereas 5 represents highest (e.g. very high amount of studying))
 
 
 Misc Variable Relations
