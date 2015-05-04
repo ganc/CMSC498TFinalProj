@@ -2,7 +2,7 @@
 title: "ACM Final Project"
 author: "Alyster Alcudia, Cynthia Gan, Mihai Sirbu"
 date: "5/2/2015"
-output: html_document
+output: pdf_document
 ---
 
 ```{r, echo=FALSE, include=FALSE}
@@ -175,7 +175,7 @@ data %>%
             fam_edu_support,
             family_relationship) %>%
      mutate(urban_rural = ifelse(urban_rural=='Urban', 0, 1)) %>% 
-     mutate(fam_size = ifelse(fam_size=='<3', 0, 1)) %>%
+     mutate(fam_size = ifelse(fam_size=='<=3', 0, 1)) %>%
      mutate(parents_cohabit = ifelse(parents_cohabit=='Apart', 0, 1)) %>%
      mutate(fam_edu_support = fam_edu_support + 0) %>%
   cor() %>%
