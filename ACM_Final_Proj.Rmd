@@ -24,9 +24,10 @@ data = as.tbl(read.csv("student-por.csv", sep=";", stringsAsFactors = TRUE))
 Let's rename the variables better!
 ```{r}
 
-rename_cols <- c(6, 11:12,16:21,23:24,26:28,31:33)
+rename_cols <- c(4, 6, 11:12,16:21,23:24,26:28,31:33)
 
-colnames(data)[rename_cols] = c("parents_cohabit",
+colnames(data)[rename_cols] = c("urban_rural",
+                                "parents_cohabit",
                                 "school_reason",
                                 "student_guardian",
                                 "extra_school_support",
@@ -108,8 +109,49 @@ As it turns out, in all three cases, females had a signficantly higher grade tha
 Let's see if there are any other gender differences for some of the other variables!
 
 ```{r}
-data %>%
-  ggplot()
+data %>% group_by(sex, has_romantic_partner) %>% tally() %>% mutate(freq = n/sum(n)) %>%
+  ggplot(aes(x=sex,y=freq, fill=has_romantic_partner))+
+  geom_bar(stat="identity",position="dodge")+
+  ggtitle("Presece of a Romantic Partner as a function of Sex (Rel. Freq)")
 
+data %>% group_by(sex, urban_rural) %>% tally() %>% mutate(freq = n/sum(n)) %>%
+  ggplot(aes(x=sex,y=freq, fill=urban_rural))+
+  geom_bar(stat="identity",position="dodge")+
+  ggtitle("Distribution of Rural/Urban location as a function of sex (Rel. Freq)")
 
+data %>% group_by(sex, famsize) %>% tally() %>% mutate(freq = n/sum(n)) %>%
+  ggplot(aes(x=sex,y=freq, fill=famsize))+
+  geom_bar(stat="identity",position="dodge")+
+  ggtitle("Student Family Size as a function of sex (Rel. Freq)")
+
+data %>% group_by(sex, study=factor(studytime)) %>% tally() %>% mutate(freq = n/sum(n)) %>%
+  ggplot(aes(x=sex,y=freq, fill=study))+
+  geom_bar(stat="identity",position="dodge")+
+  ggtitle("Student Study Time as a function of Sex (Rel. Freq)")
+
+data %>% group_by(sex, freetime=factor(freetime)) %>% tally() %>% mutate(freq = n/sum(n)) %>%
+  ggplot(aes(x=sex,y=freq, fill=freetime))+
+  geom_bar(stat="identity",position="dodge")+
+  ggtitle("Student Free Time as a function of Sex (Rel. Freq)")
+
+data %>% group_by(sex, weekend_alcohol_consumption=factor(weekend_alcohol_cons)) %>% tally() %>% mutate(freq = n/sum(n)) %>%
+  ggplot(aes(x=sex,y=freq, fill=weekend_alcohol_consumption))+
+  geom_bar(stat="identity",position="dodge")+
+  ggtitle("Weekend alcohol Consumption as a function of Sex (Rel. Freq)")
 ```
+
+Looking at the different plots, visual inspection shows a difference (unclear if significant) in relative frequencies on the basis of sex in the following variables: weekend alcohol consumption (with men drinking more), presence of romantic partners (with females more likely having a partner), and amount of study and free time (with females seeming to study more and males having more free time). Urban/Rural divisions and family size seemed to have less differences (again by visual inspection) than the other graphs. 
+
+We've looked at the relative frequencies using barplots. What if we examined relationships using scatterplots grouping by sex? 
+
+```{r}
+data %>%
+  ggplot(aes(x = absences, y = final_grade, color=sex)) + geom_point() + geom_smooth(method=lm)+
+  ggtitle("Final Grade as a function of absences grouped by sex")
+
+data %>%
+  ggplot(aes(x=studytime, y = final_grade, color=sex)) + geom_point() +geom_smooth(method=lm)+
+  ggtitle("Final Grade as a function of study time grouped by sex")
+```
+
+There doesn't appear to be any clear noticeable differences in the slopes of the lines for either plot, suggesting that if we used study time or absences to predict/understand final grade, these variables wouldn't have an interaction with sex.
