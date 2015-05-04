@@ -2,7 +2,7 @@
 title: "ACM Final Project"
 author: "Alyster Alcudia, Cynthia Gan, Mihai Sirbu"
 date: "5/2/2015"
-output: pdf_document
+output: html_document
 ---
 
 ```{r, echo=FALSE, include=FALSE}
@@ -123,7 +123,7 @@ data %>%
 In most cases, the correlations are not particularly strong. However there is medium and negative correlations between failures and grades. This makes intuitive sense given that a person who has failed previously probably has poorer school performance. Alcohol consumption during the week has a strong positive correlation, which is not surprising. Finally, the three types of grades are very strongly correlated, with a correlation of anywhere between 0.83 to 0.92. This strong correlation suggests that we may be able to focus on one of the three types of grades (e.g. final grade) when trying to understand the factors that influence student performance. 
 
 
-What about correlations between family/home attributes? Any strong correlations between such variables can lead to misleading estimates when modeling the data.
+What about correlations between family/home attributes? Any strong correlations between such variables can lead to misleading estimates when modeling the data. Since many of these attributes are binary, we will try to encode the data as 0 and 1.
 
 ```{r}
 data %>%
@@ -136,12 +136,12 @@ data %>%
      mutate(urban_rural = ifelse(urban_rural=='Urban', 0, 1)) %>% 
      mutate(fam_size = ifelse(fam_size=='<3', 0, 1)) %>%
      mutate(parents_cohabit = ifelse(parents_cohabit=='Apart', 0, 1)) %>%
-     mutate(mom_job = as.numeric(factor(mom_job, ))) %>%
-     mutate(parents_cohabit = ifelse(parents_cohabit=='Apart', 0, 1)) %>%
      mutate(fam_edu_support = fam_edu_support + 0) %>%
   cor() %>%
   corrplot(method="number",type="upper")
 ```
+
+None of the binary data showed significant correlation to one another. It looks like the only candidate for a strong correlation is the relationship between the levels of education for each parent. When modeling the data, perhaps only one of these variables should be used.
 
 Gender and Grade  
 ----------------
