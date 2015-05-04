@@ -73,10 +73,9 @@ data <-  data %>%
   mutate(fam_size = ifelse(fam_size=='GT3', '>3', '<3')) %>%
   mutate(parents_cohabit = ifelse(parents_cohabit=='A', 'Apart', 'Together')) %>%
   mutate_each_(funs(ifelse(.=='yes', TRUE, FALSE)), 
-               c("extra_school_support",           "fam_edu_support", "paid_extra_classes", 
-                 "extracurricular_activities",                  "attended_nursery", 
-                 "wants_higher_education", 
-                 "internet", "has_romantic_partner"))
+               c("extra_school_support", "fam_edu_support", "paid_extra_classes", 
+                 "extracurricular_activities", "attended_nursery", 
+                 "wants_higher_education", "internet", "has_romantic_partner"))
 
   
   
@@ -190,7 +189,7 @@ Misc Variable Relations
 ```{r}
 data %>% group_by(sex, has_romantic_partner) %>% tally() %>% mutate(freq = n/sum(n)) %>%
   ggplot(aes(x=sex,y=freq, fill=has_romantic_partner))+
-  geom_bar(stat="identity",position="dodge")+
+  geom_bar(stat="identity",position="dodge", ylim=c(0,1))+
   ggtitle("Presence of a Romantic Partner\nas a function of Sex (Rel. Freq)")
 ```
 
@@ -201,7 +200,7 @@ _Females seem to be more likely to have romantic partners than males._
 ```{r}
 data %>% group_by(sex, urban_rural) %>% tally() %>% mutate(freq = n/sum(n)) %>%
   ggplot(aes(x=sex,y=freq, fill=urban_rural))+
-  geom_bar(stat="identity",position="dodge")+
+  geom_bar(stat="identity",position="dodge", ylim=c(0,1))+
   ggtitle("Distribution of Rural/Urban location as a function of sex (Rel. Freq)")
 
 ```
@@ -215,7 +214,7 @@ _Gender and Urban/Rural appear to be independent of each other._
 
 data %>% group_by(sex, fam_size) %>% tally() %>% mutate(freq = n/sum(n)) %>%
   ggplot(aes(x=sex,y=freq, fill=fam_size))+
-  geom_bar(stat="identity",position="dodge")+
+  geom_bar(stat="identity",position="dodge", ylim=c(0,1))+
   ggtitle("Student Family Size as a function of sex (Rel. Freq)")
 
 ```
@@ -226,7 +225,7 @@ _Gender doesn't appear to have a significant affect on family size._
 ```{r}
 data %>% group_by(sex, study=factor(studytime)) %>% tally() %>% mutate(freq = n/sum(n)) %>%
   ggplot(aes(x=sex,y=freq, fill=study))+
-  geom_bar(stat="identity",position="dodge")+
+  geom_bar(stat="identity",position="dodge", ylim=c(0,1))+
   ggtitle("Student Study Time as a function of Sex (Rel. Freq)")
 ```
 _Females seem to study more than males._
@@ -236,7 +235,7 @@ _Females seem to study more than males._
 ```{r}
 data %>% group_by(sex, freetime=factor(freetime)) %>% tally() %>% mutate(freq = n/sum(n)) %>%
   ggplot(aes(x=sex,y=freq, fill=freetime))+
-  geom_bar(stat="identity",position="dodge")+
+  geom_bar(stat="identity",position="dodge", ylim=c(0,1))+
   ggtitle("Student Free Time as a function of Sex (Rel. Freq)")
 ```
 _Males seem to have ore free time than Females._
@@ -246,7 +245,7 @@ _Males seem to have ore free time than Females._
 ```{r}
 data %>% group_by(sex, weekend_alcohol_consumption=factor(weekend_alcohol_cons)) %>% tally() %>% mutate(freq = n/sum(n)) %>%
   ggplot(aes(x=sex,y=freq, fill=weekend_alcohol_consumption))+
-  geom_bar(stat="identity",position="dodge")+
+  geom_bar(stat="identity",position="dodge", ylim=c(0,1))+
   ggtitle("Weekend Alcohol Consumption\nas a function of Sex (Rel. Freq)")
 ```
 _Males tend to drink more alcohol on the weekend than females._
