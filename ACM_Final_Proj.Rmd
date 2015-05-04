@@ -1,39 +1,56 @@
 ---
-title: "ACM_Final_Proj"
+title: "ACM Final Project"
 author: "Alyster Alcudia, Cynthia Gan, Mihai Sirbu"
 date: "5/2/2015"
 output: pdf_document
 ---
 
 ```{r, echo=FALSE, include=FALSE}
-install.packages("corrplot")
-install.packages("dplyr")
-install.packages("tidyr")
-install.packages("ggplot2")
+for(i in c("corrplot", "dplyr", "tidyr", "ggplot2", "gridExtra")){
+    if( ! require( i , character.only = TRUE ) ){
+      #  If package was not able to be loaded then re-install
+      install.packages( i , dependencies = TRUE )
+      library( i , character.only = TRUE )
+    }
+}
 
-library(corrplot)
-library(dplyr)
-library(tidyr)
-library(ggplot2)
 ```
+Data
+----
+We are looking at data about students in secondary schools in Portugal. It contains information about student grades, demographics, and other social factors, collected through school reports and questionnaires.  
+
+We specifically look at grades for Portuguese language class. School years in this set are split into three periods, and as a result there are three grades. The grade issued after the third period is the final grade. 
+
+
+
+Data Tidying
+============
+
+###Read In Data
 
 ```{r}
-data = as.tbl(read.csv("student-por.csv", sep=";", stringsAsFactors = TRUE))
+data = as.tbl(read.csv("student-por.csv", sep=";", stringsAsFactors=TRUE))
 ```
 
-Let's rename the variables better!
+###Rename the Variables
+
 ```{r}
 
-rename_cols <- c(4, 6, 11:12,16:21,23:24,26:28,31:33)
+rename_cols <- c(4:12,16:21,23:24,26:28,31:33)
 
 colnames(data)[rename_cols] = c("urban_rural",
+                                "fam_size",
                                 "parents_cohabit",
                                 "school_reason",
+                                "mom_edu",
+                                "dad_edu",
+                                "mom_job",
+                                "dad_job",
                                 "student_guardian",
                                 "extra_school_support",
                                 "fam_edu_support",
                                 "paid_extra_classes",
-                                "extracurricular activites",
+                                "extracurricular_activities",
                                 "attended_nursery",
                                 "wants_higher_education",
                                 "has_romantic_partner",
@@ -41,16 +58,52 @@ colnames(data)[rename_cols] = c("urban_rural",
                                 "going_out_amount",
                                 "weekday_alcohol_cons",
                                 "weekend_alcohol_cons",
-                                "first_per_grade",
-                                "second_per_grade",
+                                "grade_one",
+                                "grade_two",
                                 "final_grade")
 
 ```
+
+###Meaningful Variable Values
+
+```{r}
+data <-  data %>% 
+  mutate(school = ifelse(school=='GP', 'Gabriel Pereira', 'Mousinho da Silveira')) %>%
+  mutate(urban_rural = ifelse(urban_rural=='R', 'Rural', 'Urban')) %>% 
+  mutate(fam_size = ifelse(fam_size=='GT3', '>3', '<3')) %>%
+  mutate(parents_cohabit = ifelse(parents_cohabit=='A', 'Apart', 'Together')) %>%
+  mutate_each_(funs(ifelse(.=='yes', TRUE, FALSE)), 
+               c("extra_school_support",           "fam_edu_support", "paid_extra_classes", 
+                 "extracurricular_activities",                  "attended_nursery", 
+                 "wants_higher_education", 
+                 "internet", "has_romantic_partner"))
+
+  
+  
+  
+```
+
+Data Exploration
+================
+
 Basic view of the data
+----------------------
 ```{r}
 dim(data)
+```
+
+The tidy data is in 1 table, with 649 observations of 33 variables. 
+
+
+
+```{r}
 summary(data)
 ```
+
+We have data from two schools, mostly from Gabriel Pereira. The sample is largely urban, with parents living together and a family size greater than 3. Most parents don't tend to have completed secondary education. A large majority, `r mean(data$wants_higher_education)`, wants higher education despite that. This is reflected in that the mean number of absences if `r mean(data$absences)` out of a possible 93. 
+
+Correlation  
+-----------
 
 Correlation betweens between different grades and
 numeric variables
@@ -60,23 +113,31 @@ data %>%
                 "freetime","going_out_amount",
                 "weekday_alcohol_cons",
                 "weekend_alcohol_cons","absences",
-                "first_per_grade","second_per_grade",
+                "grade_one","grade_two",
                 "final_grade")) %>%
   cor() %>%
   corrplot(method="number",type="upper")
 
 ```
 
-In most cases, the correlations are not particularly strong. However there is medium and negative correlations between failures and grades. This makes intuitive sense given that a person who has failed previously probably has poorer school performance. Alcohol consumption during the week and during the week has a strong positive correlation, which is not surprising. Finally, the three types of grades are very strongly correlated with a correlation of anywhere between 0.83 to 0.92. This strong correlation suggests that we may be able to focus on one of the three types of grades (e.g. final grade) when trying to understand the factors that influence student performance. 
+In most cases, the correlations are not particularly strong. However there is medium and negative correlations between failures and grades. This makes intuitive sense given that a person who has failed previously probably has poorer school performance. Alcohol consumption during the week has a strong positive correlation, which is not surprising. Finally, the three types of grades are very strongly correlated, with a correlation of anywhere between 0.83 to 0.92. This strong correlation suggests that we may be able to focus on one of the three types of grades (e.g. final grade) when trying to understand the factors that influence student performance. 
 
-Let's examine if gender seems to play a role in terms of the grade
+
+Gender and Grade  
+----------------
+
+
 ```{r}
 
 table(data$sex)
+```
 
+There number of male and female students are approximately equal, which make them good groups to compare. 
+
+```{r}
 long_grades <- data %>% 
                 gather(Grade_Type, Grade, 
-                       first_per_grade:final_grade)
+                       grade_one:final_grade)
   
 long_grades %>%
   ggplot(aes(x=Grade, fill=sex))+
@@ -85,73 +146,132 @@ long_grades %>%
   ggtitle("Density Plot across the three grades as a function of gender")
 ```
 
-The plots don't indicate obvious differenes between genders in terms of grade performance. Let's just do a t.test between genders to see if we're missing something
+The plots don't indicate obvious differenes between genders in terms of grade performance. Let's just do a t-test between genders to see if we're missing something.
 
 ```{r}
-males_one <- long_grades %>% filter(sex=="M",Grade_Type=="first_per_grade")
-females_one <- long_grades %>% filter(sex=="F",Grade_Type=="first_per_grade")
+males_one <- long_grades %>% filter(sex=="M",Grade_Type=="grade_one")
+females_one <- long_grades %>% filter(sex=="F",Grade_Type=="grade_one")
 
 t.test(x=males_one$Grade,y=females_one$Grade,alternative="two.sided")
+```
+The mean grade of female students in period one is signficantly higher than the mean grade of male students. The t-test gives a p-value 0.007, which means that it is extremely unlikely that the difference of the means of the two groups is actually 0.
 
-males_two <- long_grades %>% filter(sex=="M",Grade_Type=="second_per_grade")
-females_two <- long_grades %>% filter(sex=="F",Grade_Type=="second_per_grade")
+``` {r}
+males_two <- long_grades %>% filter(sex=="M",Grade_Type=="grade_two")
+females_two <- long_grades %>% filter(sex=="F",Grade_Type=="grade_two")
 
 t.test(x=males_two$Grade,y=females_two$Grade,alternative="two.sided")
+```
 
+The mean grade of female students in period two is also signficantly higher than the mean grade of male students, at `r mean(females_two$Grade)` compared to `r mean(males_two$Grade)`. The probability that the difference of the means of the two groups is actually 0 is about 0.007, which means that it is extremely unlikely that we are seeing noise.
+
+
+```{r}
 males_final <- long_grades %>% filter(sex=="M",Grade_Type=="final_grade")
 females_final <- long_grades %>% filter(sex=="F",Grade_Type=="final_grade")
 
 t.test(x=males_final$Grade,y=females_final$Grade,alternative="two.sided")
 
 ```
-As it turns out, in all three cases, females had a signficantly higher grade than males as all three p values were less than 0.05. 
+
+
+The mean final grade of female students is `r mean(females_two$Grade)`, and the mean final grade of male is `r mean(males_two$Grade)`. Since the p-value is extremely low, at about 0.001, the difference of `r mean(females_two$Grade) - mean(males_two$Grade)` is a statistiscally significant difference.
+
+###Conclusion of Gender and Grades
+
+As it turns out, in all three cases, females had a signficantly higher grade than males as all three p values were less than 0.05.  
+
 
 Let's see if there are any other gender differences for some of the other variables!
 
+
+Misc Variable Relations
+-----------------------
 ```{r}
 data %>% group_by(sex, has_romantic_partner) %>% tally() %>% mutate(freq = n/sum(n)) %>%
   ggplot(aes(x=sex,y=freq, fill=has_romantic_partner))+
   geom_bar(stat="identity",position="dodge")+
-  ggtitle("Presece of a Romantic Partner as a function of Sex (Rel. Freq)")
+  ggtitle("Presence of a Romantic Partner\nas a function of Sex (Rel. Freq)")
+```
 
+_Females seem to be more likely to have romantic partners than males._
+
+\pagebreak
+
+```{r}
 data %>% group_by(sex, urban_rural) %>% tally() %>% mutate(freq = n/sum(n)) %>%
   ggplot(aes(x=sex,y=freq, fill=urban_rural))+
   geom_bar(stat="identity",position="dodge")+
   ggtitle("Distribution of Rural/Urban location as a function of sex (Rel. Freq)")
 
-data %>% group_by(sex, famsize) %>% tally() %>% mutate(freq = n/sum(n)) %>%
-  ggplot(aes(x=sex,y=freq, fill=famsize))+
+```
+
+
+_Gender and Urban/Rural appear to be independent of each other._
+
+\pagebreak
+
+```{r}
+
+data %>% group_by(sex, fam_size) %>% tally() %>% mutate(freq = n/sum(n)) %>%
+  ggplot(aes(x=sex,y=freq, fill=fam_size))+
   geom_bar(stat="identity",position="dodge")+
   ggtitle("Student Family Size as a function of sex (Rel. Freq)")
 
+```
+_Gender doesn't appear to have a significant affect on family size._
+
+\pagebreak
+
+```{r}
 data %>% group_by(sex, study=factor(studytime)) %>% tally() %>% mutate(freq = n/sum(n)) %>%
   ggplot(aes(x=sex,y=freq, fill=study))+
   geom_bar(stat="identity",position="dodge")+
   ggtitle("Student Study Time as a function of Sex (Rel. Freq)")
+```
+_Females seem to study more than males._
 
+\pagebreak
+
+```{r}
 data %>% group_by(sex, freetime=factor(freetime)) %>% tally() %>% mutate(freq = n/sum(n)) %>%
   ggplot(aes(x=sex,y=freq, fill=freetime))+
   geom_bar(stat="identity",position="dodge")+
   ggtitle("Student Free Time as a function of Sex (Rel. Freq)")
+```
+_Males seem to have ore free time than Females._
 
+\pagebreak
+
+```{r}
 data %>% group_by(sex, weekend_alcohol_consumption=factor(weekend_alcohol_cons)) %>% tally() %>% mutate(freq = n/sum(n)) %>%
   ggplot(aes(x=sex,y=freq, fill=weekend_alcohol_consumption))+
   geom_bar(stat="identity",position="dodge")+
-  ggtitle("Weekend alcohol Consumption as a function of Sex (Rel. Freq)")
+  ggtitle("Weekend Alcohol Consumption\nas a function of Sex (Rel. Freq)")
 ```
+_Males tend to drink more alcohol on the weekend than females._
+
+###Misc Variable Relationship Conclusions   
 
 Looking at the different plots, visual inspection shows a difference (unclear if significant) in relative frequencies on the basis of sex in the following variables: weekend alcohol consumption (with men drinking more), presence of romantic partners (with females more likely having a partner), and amount of study and free time (with females seeming to study more and males having more free time). Urban/Rural divisions and family size seemed to have less differences (again by visual inspection) than the other graphs. 
 
+Final Grades and Gender
+-----------------------
+
 We've looked at the relative frequencies using barplots. What if we examined relationships using scatterplots grouping by sex? 
 
-```{r}
-data %>%
-  ggplot(aes(x = absences, y = final_grade, color=sex)) + geom_point() + geom_smooth(method=lm)+
-  ggtitle("Final Grade as a function of absences grouped by sex")
+```{r, fig.align='left', out.width='\\maxwidth', out.height='0.6\\maxwidth'}
 
-data %>%
+fg_fg_abs_sex = data %>%
+  ggplot(aes(x = absences, y = final_grade, color=sex)) + geom_point() + geom_smooth(method=lm)+
+  ggtitle("Final Grade as a\nfunction of absences\ngrouped by sex")
+
+fg_fg_std_sex = data %>%
   ggplot(aes(x=studytime, y = final_grade, color=sex)) + geom_point() +geom_smooth(method=lm)+
-  ggtitle("Final Grade as a function of study time grouped by sex")
+  ggtitle("Final Grade as a\nfunction of study time\ngrouped by sex")
+
+grid.arrange(fg_fg_abs_sex, fg_fg_std_sex, nrow=1)
+
 ```
 
 There doesn't appear to be any clear noticeable differences in the slopes of the lines for either plot, suggesting that if we used study time or absences to predict/understand final grade, these variables wouldn't have an interaction with sex.
