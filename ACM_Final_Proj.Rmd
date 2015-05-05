@@ -336,8 +336,8 @@ There doesn't appear to be any clear noticeable differences in the slopes of the
 
 
 
-Parental Education Levels and Employment
-----------------------------------------
+Parental Education Levels
+-------------------------
 
 ```{r}
 mom_edu_finals <- data %>% 
@@ -371,7 +371,7 @@ _If you discount parents with no education, there is a clear relationship betwee
 
 ####Mother's Education  
 
-Suprisingly, the estimated mean final school for students whose mother has no education is almost as high as students whose mother has education up to secondary school. However, The confidence interval for this estimate is extremely high compared to the other estimates, spanning `r mom_edu_finals$right_CI[1] - mom_edu_finals$left_CI[1]` compared to the others, which tend to span about 1 point (`r print(r mom_edu_finals$right_CI[2:5]-mom_edu_finals$left_CI[2:5])` respectively). This is likely because there are very few mothers with no education, which makes the mean very susceptible to outliers. One student who does unusually well could highly influence the estimated mean.  
+Suprisingly, the estimated mean final school for students whose mother has no education is almost as high as students whose mother has education up to secondary school. However, The confidence interval for this estimate is extremely high compared to the other estimates, spanning `r mom_edu_finals$right_CI[1] - mom_edu_finals$left_CI[1]` compared to the others, which tend to span about 1 point (`r print(mom_edu_finals$right_CI[2:5]-mom_edu_finals$left_CI[2:5])` respectively). This is likely because there are very few mothers with no education, which makes the mean very susceptible to outliers. One student who does unusually well could highly influence the estimated mean.  
 
 Aside from the estimate for student's with mother's with no education, estimates for the mean final grades steadily increase as the amount of education their mother recieved increases. However, the difference between the mean final grade for a student with a mother with higher education and a student with a mother with 4th grade education is only `r mom_edu_finals$mean_est[5] - mom_edu_finals$mean_est[1]`, which is not very large.
 
@@ -379,7 +379,14 @@ Aside from the estimate for student's with mother's with no education, estimates
 
 The estimated mean final grades for each level of father education shows very similar trends as the mean final grades for levels of mother education. However, the effects appear to be slightly stronger. The difference between the higher education and 4th grade in fathers is `r dad_edu_finals$mean_est[5] - dad_edu_finals$mean_est[1]`, compared to `r mom_edu_finals$mean_est[5] - mom_edu_finals$mean_est[1]` in mothers.  
 
+####Overall  
+
+
 These exploratory plots suggest there may be a relationship between parental education levels and academic achievement. There are many possible underlying explanations for this possible relation, such as a stronger parental emphasis on education, or being able to provide higher quality support. 
+
+
+Parental Employment 
+-------------------
 
 ```{r}
 mom_job_finals <- data %>% 
