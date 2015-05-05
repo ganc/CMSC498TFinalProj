@@ -2,7 +2,7 @@
 title: "ACM Final Project"
 author: "Alyster Alcudia, Cynthia Gan, Mihai Sirbu"
 date: "5/2/2015"
-output: pdf_document
+output: html_document
 ---
 
 ```{r, echo=FALSE, include=FALSE}
@@ -161,25 +161,44 @@ data %>%
 In most cases, the correlations are not particularly strong. However there is medium and negative correlations between failures and grades. This makes intuitive sense given that a person who has failed previously probably has poorer school performance. Alcohol consumption during the week has a strong positive correlation, which is not surprising. Finally, the three types of grades are very strongly correlated, with a correlation of anywhere between 0.83 to 0.92. This strong correlation suggests that we may be able to focus on one of the three types of grades (e.g. final grade) when trying to understand the factors that influence student performance. 
 
 
-What about correlations between family/home attributes? Any strong correlations between such variables can lead to misleading estimates when modeling the data. Since many of these attributes are binary, we will try to encode the data as 0 and 1.
+What about correlations between family/home attributes? Any strong correlations between such variables can lead to misleading estimates when modeling the data. In this analysis, we will consider the `fam_size`, `parents_cohabit` and `fam_edu_support` variables with respect to `family_relationship`.
 
 ```{r}
-data %>%
-     select(urban_rural,
-            fam_size,
-            parents_cohabit,
-            mom_edu, dad_edu,
-            fam_edu_support,
-            family_relationship) %>%
-     mutate(urban_rural = ifelse(urban_rural=='Urban', 0, 1)) %>% 
-     mutate(fam_size = ifelse(fam_size=='<=3', 0, 1)) %>%
-     mutate(parents_cohabit = ifelse(parents_cohabit=='Apart', 0, 1)) %>%
-     mutate(fam_edu_support = fam_edu_support + 0) %>%
-  cor() %>%
-  corrplot(method="circle",type="lower")
+tbl = table(data$family_relationship, data$fam_size)
+chisq.test(tbl)
 ```
 
-None of the binary data showed significant correlation to one another. It looks like the only candidate for a strong correlation is the relationship between the levels of education for each parent. When modeling the data, perhaps only one of these variables should be used.
+```{r}
+tbl = table(data$family_relationship, data$parents_cohabit)
+chisq.test(tbl)
+```
+
+```{r}
+tbl = table(data$family_relationship, data$fam_edu_support)
+chisq.test(tbl)
+```
+
+The above chi-squared tests result in high p-values; there is not enough evidence to reject the null hypothesis. Therefore, these variables are independent.
+
+What about the job types and education levels for each parent?
+
+```{r}
+edutbl = table(data$mom_edu, data$dad_edu)
+chisq.test(edutbl)
+
+jobtbl = table(data$mom_job, data$dad_job)
+chisq.test(jobtbl)
+```
+
+The p-value is small enough to reject the null hypothesis. That is, the job types and education levels for each parent are highly correlated. Although there is a warning from `chisq.test` (most likely because of the small cell values of `tbl`), clear trends can be seen looking at the values of `tbl`.
+
+Since `mom_edu` and `dad_edu` are numerical values, we can compute the correlation between them.
+
+```{r}
+cor(data$mom_edu, data$dad_edu)
+```
+
+The above code shows that on average, `mom_edu` and `dad_edu` are positively correlated. Therefore, including both variables in a data model can lead to misleading estimates.
 
 Gender and Grade  
 ----------------
