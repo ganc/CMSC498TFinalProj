@@ -118,9 +118,6 @@ data <-  data %>%
                c("extra_school_support", "fam_edu_support", "paid_extra_classes", 
                  "extracurricular_activities", "attended_nursery", 
                  "wants_higher_education", "internet", "has_romantic_partner"))
-
-  
-  
   
 ```
 
@@ -336,3 +333,81 @@ grid.arrange(fg_fg_abs_sex, fg_fg_std_sex, nrow=1)
 ```
 
 There doesn't appear to be any clear noticeable differences in the slopes of the lines for either plot, suggesting that if we used study time or absences to predict/understand final grade, these variables wouldn't have an interaction with sex.
+
+
+
+Parental Education Levels and Employment
+----------------------------------------
+
+```{r}
+mom_edu_finals <- data %>% 
+  mutate(mom_edu_fac = factor(mom_edu, levels=seq(0,4), labels=c("None", "4th grade","5th-9th\ngrade", "Secondary\neducation", "Higher\neducation"), ordered=TRUE)) %>% 
+  group_by(mom_edu_fac) %>% 
+  summarise(mean_est = t.test(final_grade)$estimate, left_CI = t.test(final_grade)$conf.int[1], right_CI = t.test(final_grade)$conf.int[2]) 
+
+mom_edu_finals_plot <- ggplot(mom_edu_finals, aes(x=mom_edu_fac)) + 
+  geom_point(aes(y=mean_est), size=3, color='darkgreen') + 
+  geom_errorbar(aes(ymin=left_CI, ymax=right_CI), width=0.1) + 
+  labs(title="Estimated Mean Final Grade\nand 95% Confidence Interval\nby Mother's Education Level", x="Mother's Education Level", y="Estimated Mean Final Grade") + 
+  ylim(5,15) + 
+  theme(axis.text.x=element_text(angle=50, vjust=0.5))
+
+dad_edu_finals = data %>% 
+  mutate(dad_edu_fac = factor(dad_edu, levels=seq(0,4), labels=c("None", "4th grade","5th-9th\ngrade", "Secondary\neducation", "Higher\neducation"), ordered=TRUE)) %>% 
+  group_by(dad_edu_fac) %>% 
+  summarise(mean_est = t.test(final_grade)$estimate, left_CI = t.test(final_grade)$conf.int[1], right_CI = t.test(final_grade)$conf.int[2]) 
+
+dad_edu_finals_plot <- ggplot(dad_edu_finals, aes(x=dad_edu_fac)) + 
+  geom_point(aes(y=mean_est), size=3, color='darkgreen') + 
+  geom_errorbar(aes(ymin=left_CI, ymax=right_CI), width=0.1) + 
+  labs(title="Estimated Mean Final Grade\nand 95% Confidence Interval by Father's Education Level", x="Father's Education Level", y="Estimated Mean Final Grade") + 
+  ylim(5,15) + 
+  theme(axis.text.x=element_text(angle=50, vjust=0.5))
+
+grid.arrange(mom_edu_finals_plot, dad_edu_finals_plot, nrow=1)
+```
+
+_If you discount parents with no education, there is a clear relationship between parental education and child academic achievement_
+
+####Mother's Education  
+
+Suprisingly, the estimated mean final school for students whose mother has no education is almost as high as students whose mother has education up to secondary school. However, The confidence interval for this estimate is extremely high compared to the other estimates, spanning `r mom_edu_finals$right_CI[1] - mom_edu_finals$left_CI[1]` compared to the others, which tend to span about 1 point (`r print(r mom_edu_finals$right_CI[2:5]-mom_edu_finals$left_CI[2:5])` respectively). This is likely because there are very few mothers with no education, which makes the mean very susceptible to outliers. One student who does unusually well could highly influence the estimated mean.  
+
+Aside from the estimate for student's with mother's with no education, estimates for the mean final grades steadily increase as the amount of education their mother recieved increases. However, the difference between the mean final grade for a student with a mother with higher education and a student with a mother with 4th grade education is only `r mom_edu_finals$mean_est[5] - mom_edu_finals$mean_est[1]`, which is not very large.
+
+####Father's Education  
+
+The estimated mean final grades for each level of father education shows very similar trends as the mean final grades for levels of mother education. However, the effects appear to be slightly stronger. The difference between the higher education and 4th grade in fathers is `r dad_edu_finals$mean_est[5] - dad_edu_finals$mean_est[1]`, compared to `r mom_edu_finals$mean_est[5] - mom_edu_finals$mean_est[1]` in mothers.  
+
+These exploratory plots suggest there may be a relationship between parental education levels and academic achievement. There are many possible underlying explanations for this possible relation, such as a stronger parental emphasis on education, or being able to provide higher quality support. 
+
+```{r}
+mom_job_finals <- data %>% 
+  group_by(mom_job) %>% 
+  summarise(mean_est = t.test(final_grade)$estimate, left_CI = t.test(final_grade)$conf.int[1], right_CI = t.test(final_grade)$conf.int[2]) 
+
+mom_job_finals_plot = ggplot(mom_job_finals, aes(x=mom_job)) + 
+  geom_point(aes(y=mean_est), size=3, color='darkgreen') + 
+  geom_errorbar(aes(ymin=left_CI, ymax=right_CI), width=0.1) + 
+  labs(title="Estimated Mean Final Grade\nand 95% Confidence Interval\nby Mother's Job", x="Mother's Job", y="Estimated Mean Final Grade") + 
+  ylim(5,15) + 
+  theme(axis.text.x=element_text(angle=50, vjust=0.5))
+
+dad_job_finals <- data %>% 
+  group_by(dad_job) %>% 
+  summarise(mean_est = t.test(final_grade)$estimate, left_CI = t.test(final_grade)$conf.int[1], right_CI = t.test(final_grade)$conf.int[2]) 
+
+dad_job_finals_plot = ggplot(dad_job_finals, aes(x=dad_job)) + 
+  geom_point(aes(y=mean_est), size=3, color='darkgreen') + 
+  geom_errorbar(aes(ymin=left_CI, ymax=right_CI), width=0.1) + 
+  labs(title="Estimated Mean Final Grade\nand 95% Confidence Interval\nby Father's Job", x="Father's Job", y="Estimated Mean Final Grade") + 
+  ylim(5,15) + 
+  theme(axis.text.x=element_text(angle=50, vjust=0.5))
+grid.arrange(mom_job_finals_plot, dad_job_finals_plot, nrow=1)
+```
+
+_Estimated final grades show similar trends across mother and father employment._
+
+Health and teaching industries are associated with the highest education levels, which intuitively makes sense. They are both industries that require extensive education to qualify for, and previous plots suggested that there may be a relationship between parental education and academic performance.
+Meanwhile, parents that stay at home correspond to worse student achievement. However, it is unclear whether  "at home" is purposeful or not. If "at home" includes parents who are unemployed but seeking work, there may be underlying factors for poorer academic achievement, such as a stressful home environment. 
+
