@@ -143,7 +143,7 @@ We have data from two schools, mostly from Gabriel Pereira. The sample is largel
 Correlation  
 -----------
 
-Correlation betweens between different grades and
+Correlations between different grades and
 numeric variables
 ```{r}
 data %>%
