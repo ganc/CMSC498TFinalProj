@@ -200,6 +200,25 @@ cor(data$mom_edu, data$dad_edu)
 
 The above code shows that on average, `mom_edu` and `dad_edu` are positively correlated. Therefore, including both variables in a data model can lead to misleading estimates.
 
+There are three variables related to academic support: `fam_edu_sup`, `extra_school_support`, and `paid_extra_classes`. Therefore, we will run chi-squared tests on these variables to make sure they are independent.
+
+```{r}
+tbl = table(data$fam_edu_sup, data$extra_school_support)
+chisq.test(tbl)
+```
+
+```{r}
+tbl = table(data$fam_edu_sup, data$paid_extra_classes)
+chisq.test(tbl)
+```
+
+```{r}
+tbl = table(data$paid_extra_classes, data$extra_school_support)
+chisq.test(tbl)
+```
+
+The p-value of the chi-squared test between `fam_edu_sup` and `paid_extra_classes` is less than the `0.05` significance level. Overall, however, these p-values are not low enough to reject the null hypothesis. Therefore, these variables are independent.
+
 Gender and Grade  
 ----------------
 
