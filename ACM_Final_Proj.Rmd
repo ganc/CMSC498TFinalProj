@@ -2,7 +2,7 @@
 title: "ACM Final Project"
 author: "Alyster Alcudia, Cynthia Gan, Mihai Sirbu"
 date: "5/2/2015"
-output: html_document
+output: pdf_document
 ---
 
 ```{r, echo=FALSE, include=FALSE}
@@ -165,6 +165,8 @@ What about correlations between family/home attributes? Any strong correlations 
 
 ```{r}
 tbl = table(data$family_relationship, data$fam_size)
+tbl
+
 chisq.test(tbl)
 ```
 
@@ -505,3 +507,8 @@ HSD.test(aov(final_grade ~ dad_job, data=data), "dad_job", group=TRUE,
 ```
 
 The split in the Tukey HSD test on father profession is slightly cleaner than that on mother profession. Teacher fathers correspond to significantly higher final scores than other, service, or at home fathers. Fathers in the latter three industries do not have statistically significant differences from each other, but are different from teacher fathers. However, fathers in the health profession are not significantly different from either group. 
+
+
+###Overall
+
+There is statistically siginficance to the type of employment of parents. Students with parents that are teachers, or mothers in health tend to have higher final grades than ohter students. 
