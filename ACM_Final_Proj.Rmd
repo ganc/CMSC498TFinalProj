@@ -6,7 +6,7 @@ output: pdf_document
 ---
 
 ```{r, echo=FALSE, include=FALSE}
-for(i in c("corrplot", "car", "dplyr", "tidyr", "ggplot2", "gridExtra", "agricolae")){
+for(i in c("corrplot", "car", "dplyr", "tidyr", "ggplot2", "gridExtra","agricolae")){
     if( ! require( i , character.only = TRUE ) ){
       #  If package was not able to be loaded then re-install
       install.packages( i , dependencies = TRUE )
