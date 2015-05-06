@@ -55,5 +55,6 @@ lm_sex <- lm(final_grade ~ sex, data = data)
 
 summary(lm_sex)
 
-lm(final_grade ~ failures, data = data)
 ```
+
+The average grade for females  is 12.25 whereas the average grade for Males is 11.40. The difference between the two is signifcant (p < 0.001); the R-squared is 0.015.
