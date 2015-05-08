@@ -1,8 +1,8 @@
 ---
 title: "ACM Preliminary Analysis"
-author: "Mihai Sirbu"
+author: "Alyster Alucadia, Cynthia Gan, Mihai Sirbu"
 date: "Wednesday, May 06, 2015"
-output: html_document
+output: pdf_document
 ---
 
 ```{r, echo=FALSE, include=FALSE}
@@ -83,3 +83,33 @@ summary(lm_family)
 Note that `dad_edu` and `dad_job` were not used since they are highly correlated to `mom_edu` and `mom_job`, respectively.
 
 Out of the variables used, it looks like `mom_edu` has the only significant estimate. The estimate of `0.5132` suggests that each additional level of education reached by the mother corresponds with an additional `0.5132` points in the student's final grade in Portuguese.
+
+###Regression with Student Behaviors
+
+```{r}
+lm_habits <- lm(final_grade ~ paid_extra_classes + extracurricular_activities + attended_nursery + wants_higher_education + has_romantic_partner + going_out_amount + weekday_alcohol_cons + weekend_alcohol_cons, data = data)
+
+summary(lm_habits)
+```
+
+Out of the variables used, it seems that only wanting a higher education (i.e. `wants_higher_education`) and weekday alcohol consumption (i.e. `weekday_alchol_cons`) were significant.
+
+```{r}
+lm_habits2 <- lm(final_grade ~ wants_higher_education + weekday_alcohol_cons, data = data)
+
+summary(lm_habits2)
+
+```
+
+The combined adjusted R-Squared id about 0.134 which is very low. However, the p-values for the two variables are both very high, suggestimg that they likely correspond to real differences in final scores. The strength of wanting higher education both has a larger slope estimate and a more significant p-value compared to weekday alcohol consumption. It is heartening to see that academic ambition corresponds strongly to academic achievement. 
+
+###Regression with Hybrid Step-Wise Abroach 
+
+```{r}
+fit = lm(final_grade~.-grade_one-grade_two,data=data)
+step = stepAIC(fit, direction="both")
+summary(step)
+```
+
+The hybrid step-wise linear regression model builder results in 14 different variables. There are 5 variables with higher statistical significance than the others, the school the student attended, the number of previous failures the student has, whether or not the student had extra educational support, and whether or not the student wants a higher education. Among these, the one that has the highest estimate on the influence is whether or not the student wants higher education. 
+Sadly, the adjusted R-squared is 0.3192. This is low enough that we cannot make  good predictions, even if we can identify influential factors.  
