@@ -9,7 +9,7 @@ output: html_document
 library(dplyr)
 ```
 
-You can also embed plots, for example:
+###Read in Data
 
 ```{r}
 data = as.tbl(read.csv("student-por.csv", sep=";", stringsAsFactors=TRUE))
@@ -45,6 +45,23 @@ colnames(data)[rename_cols] = c("urban_rural",
                                 "grade_two",
                                 "final_grade")
 ```
+
+###Meaningful Variable Values
+
+```{r}
+data <-  data %>% 
+  mutate(school = ifelse(school=='GP', 'Gabriel Pereira', 'Mousinho da Silveira')) %>%
+  mutate(urban_rural = ifelse(urban_rural=='R', 'Rural', 'Urban')) %>% 
+  mutate(fam_size = ifelse(fam_size=='GT3', '>3', '<=3')) %>%
+  mutate(parents_cohabit = ifelse(parents_cohabit=='A', 'Apart', 'Together')) %>%
+  mutate_each_(funs(ifelse(.=='yes', TRUE, FALSE)), 
+               c("extra_school_support", "fam_edu_support", "paid_extra_classes", 
+                 "extracurricular_activities", "attended_nursery", 
+                 "wants_higher_education", "internet", "has_romantic_partner"))
+  
+```
+
+###Regression Using Sex as a Variable
 
 ```{r}
 lm_sex <- lm(final_grade ~ sex, data = data)
