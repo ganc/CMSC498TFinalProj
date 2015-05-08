@@ -1,0 +1,60 @@
+---
+title: "ACM_Preliminary_Analysis"
+author: "Mihai Sirbu"
+date: "Wednesday, May 06, 2015"
+output: html_document
+---
+
+This is an R Markdown document. Markdown is a simple formatting syntax for authoring HTML, PDF, and MS Word documents. For more details on using R Markdown see <http://rmarkdown.rstudio.com>.
+
+When you click the **Knit** button a document will be generated that includes both content as well as the output of any embedded R code chunks within the document. You can embed an R code chunk like this:
+
+```{r}
+summary(cars)
+```
+
+You can also embed plots, for example:
+
+```{r}
+data = as.tbl(read.csv("student-por.csv", sep=";", stringsAsFactors=TRUE))
+```
+
+###Rename the Variables
+
+```{r}
+
+rename_cols <- c(4:12,16:21,23:24,26:28,31:33)
+
+colnames(data)[rename_cols] = c("urban_rural",
+                                "fam_size",
+                                "parents_cohabit",
+                                "mom_edu",
+                                "dad_edu",
+                                "mom_job",
+                                "dad_job",
+                                "school_reason",
+                                "student_guardian",
+                                "extra_school_support",
+                                "fam_edu_support",
+                                "paid_extra_classes",
+                                "extracurricular_activities",
+                                "attended_nursery",
+                                "wants_higher_education",
+                                "has_romantic_partner",
+                                "family_relationship",
+                                "going_out_amount",
+                                "weekday_alcohol_cons",
+                                "weekend_alcohol_cons",
+                                "grade_one",
+                                "grade_two",
+                                "final_grade")
+```
+
+```{r}
+lm_sex <- lm(final_grade ~ sex, data = data)
+
+summary(lm_sex)
+
+```
+
+The average grade for females  is 12.25 whereas the average grade for Males is 11.40. The difference between the two is signifcant (p < 0.001); the R-squared is 0.015.

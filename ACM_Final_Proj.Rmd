@@ -6,7 +6,7 @@ output: html_document
 ---
 
 ```{r, echo=FALSE, include=FALSE}
-for(i in c("corrplot", "car", "dplyr", "tidyr", "ggplot2", "gridExtra", "agricolae")){
+for(i in c("corrplot", "car", "dplyr", "tidyr", "ggplot2", "gridExtra","agricolae")){
     if( ! require( i , character.only = TRUE ) ){
       #  If package was not able to be loaded then re-install
       install.packages( i , dependencies = TRUE )
@@ -143,7 +143,7 @@ We have data from two schools, mostly from Gabriel Pereira. The sample is largel
 Correlation  
 -----------
 
-Correlation betweens between different grades and
+Correlations between different grades and
 numeric variables
 ```{r}
 data %>%
@@ -202,6 +202,25 @@ cor(data$mom_edu, data$dad_edu)
 
 The above code shows that on average, `mom_edu` and `dad_edu` are positively correlated. Therefore, including both variables in a data model can lead to misleading estimates.
 
+There are three variables related to academic support: `fam_edu_sup`, `extra_school_support`, and `paid_extra_classes`. Therefore, we will run chi-squared tests on these variables to make sure they are independent.
+
+```{r}
+tbl = table(data$fam_edu_sup, data$extra_school_support)
+chisq.test(tbl)
+```
+
+```{r}
+tbl = table(data$fam_edu_sup, data$paid_extra_classes)
+chisq.test(tbl)
+```
+
+```{r}
+tbl = table(data$paid_extra_classes, data$extra_school_support)
+chisq.test(tbl)
+```
+
+The p-value of the chi-squared test between `fam_edu_sup` and `paid_extra_classes` is less than the `0.05` significance level. Overall, however, these p-values are not low enough to reject the null hypothesis. Therefore, these variables are independent.
+
 Gender and Grade  
 ----------------
 
@@ -224,7 +243,7 @@ long_grades %>%
   ggtitle("Density Plot across the three grades as a function of gender")
 ```
 
-The plots don't indicate obvious differenes between genders in terms of grade performance. Let's just do a t-test between genders to see if we're missing something.
+The plots don't indicate obvious differences between genders in terms of grade performance. Let's just do a t-test between genders to see if we're missing something.
 
 ```{r}
 males_one <- long_grades %>% filter(sex=="M",Grade_Type=="grade_one")
@@ -232,7 +251,7 @@ females_one <- long_grades %>% filter(sex=="F",Grade_Type=="grade_one")
 
 t.test(x=males_one$Grade,y=females_one$Grade,alternative="two.sided")
 ```
-The mean grade of female students in period one is signficantly higher than the mean grade of male students. The t-test gives a p-value 0.007, which means that it is extremely unlikely that the difference of the means of the two groups is actually 0.
+The mean grade of female students in period one is significantly higher than the mean grade of male students. The t-test gives a p-value 0.007, which means that it is extremely unlikely that the difference of the means of the two groups is actually 0.
 
 ``` {r}
 males_two <- long_grades %>% filter(sex=="M",Grade_Type=="grade_two")
@@ -241,7 +260,7 @@ females_two <- long_grades %>% filter(sex=="F",Grade_Type=="grade_two")
 t.test(x=males_two$Grade,y=females_two$Grade,alternative="two.sided")
 ```
 
-The mean grade of female students in period two is also signficantly higher than the mean grade of male students, at `r mean(females_two$Grade)` compared to `r mean(males_two$Grade)`. The probability that the difference of the means of the two groups is actually 0 is about 0.007, which means that it is extremely unlikely that we are seeing noise.
+The mean grade of female students in period two is also significantly higher than the mean grade of male students, at `r mean(females_two$Grade)` compared to `r mean(males_two$Grade)`. The probability that the difference of the means of the two groups is actually 0 is about 0.007, which means that it is extremely unlikely that we are seeing noise.
 
 
 ```{r}
@@ -253,11 +272,11 @@ t.test(x=males_final$Grade,y=females_final$Grade,alternative="two.sided")
 ```
 
 
-The mean final grade of female students is `r mean(females_two$Grade)`, and the mean final grade of male is `r mean(males_two$Grade)`. Since the p-value is extremely low, at about 0.001, the difference of `r mean(females_two$Grade) - mean(males_two$Grade)` is a statistiscally significant difference.
+The mean final grade of female students is `r mean(females_two$Grade)`, and the mean final grade of male is `r mean(males_two$Grade)`. Since the p-value is extremely low, at about 0.001, the difference of `r mean(females_two$Grade) - mean(males_two$Grade)` is a statistically significant difference.
 
 ###Conclusion of Gender and Grades
 
-As it turns out, in all three cases, females had a signficantly higher grade than males as all three p values were less than 0.05.  
+As it turns out, in all three cases, females had a significantly higher grade than males as all three p values were less than 0.05.  
 
 
 Let's see if there are any other gender differences for some of the other variables! (Note: in cases where the scale is from 1 to 5, 1 represents lowest (e.g. very amount of studying) whereas 5 represents highest (e.g. very high amount of studying))
@@ -404,9 +423,9 @@ _If you discount parents with no education, there is a clear relationship betwee
 
 ###Mother's Education  
 
-Suprisingly, the estimated mean final school for students whose mother has no education is almost as high as students whose mother has education up to secondary school. However, The confidence interval for this estimate is extremely high compared to the other estimates, spanning `r mom_edu_finals$right_CI[1] - mom_edu_finals$left_CI[1]` compared to the others, which tend to span about 1 point (`r mom_edu_finals$right_CI[2:5]-mom_edu_finals$left_CI[2:5]` respectively). This is likely because there are very few mothers with no education, which makes the mean very susceptible to outliers. One student who does unusually well could highly influence the estimated mean.  
+Surprisingly, the estimated mean final school for students whose mother has no education is almost as high as students whose mother has education up to secondary school. However, The confidence interval for this estimate is extremely high compared to the other estimates, spanning `r mom_edu_finals$right_CI[1] - mom_edu_finals$left_CI[1]` compared to the others, which tend to span about 1 point (`r mom_edu_finals$right_CI[2:5]-mom_edu_finals$left_CI[2:5]` respectively). This is likely because there are very few mothers with no education, which makes the mean very susceptible to outliers. One student who does unusually well could highly influence the estimated mean.  
 
-Aside from the estimate for student's with mother's with no education, estimates for the mean final grades steadily increase as the amount of education their mother recieved increases. However, the difference between the mean final grade for a student with a mother with higher education and a student with a mother with 4th grade education is only `r mom_edu_finals$mean_est[5] - mom_edu_finals$mean_est[1]`, which is not very large.
+Aside from the estimate for student's with mother's with no education, estimates for the mean final grades steadily increase as the amount of education their mother received increases. However, the difference between the mean final grade for a student with a mother with higher education and a student with a mother with 4th grade education is only `r mom_edu_finals$mean_est[5] - mom_edu_finals$mean_est[1]`, which is not very large.
 
 ```{r}
 HSD.test(aov(final_grade ~ mom_edu, data=data), "mom_edu", group=TRUE, 
@@ -424,7 +443,7 @@ HSD.test(aov(final_grade ~ dad_edu, data=data), "dad_edu", group=TRUE,
          alpha = 0.05, console=TRUE)
 ```
 
-The Tukey HSD Test on final grades by father's education level was much less conclusive than that of the mother's. The effect of the different education levels appears to be more incremental. Having a father with a higher education is associated with a significantly better score than having one who did not complete secondary education. Having a father with second education is associated with significantly better final scores than havign one with 4th grade education. 
+The Tukey HSD Test on final grades by father's education level was much less conclusive than that of the mother's. The effect of the different education levels appears to be more incremental. Having a father with a higher education is associated with a significantly better score than having one who did not complete secondary education. Having a father with second education is associated with significantly better final scores than having one with 4th grade education. 
 
 ###Overall  
 
@@ -492,4 +511,4 @@ The split in the Tukey HSD test on father profession is slightly cleaner than th
 
 ###Overall
 
-There is statistically siginficance to the type of employment of parents. Students with parents that are teachers, or mothers in health tend to have higher final grades than ohter students. 
+There is statistically significance to the type of employment of parents. Students with parents that are teachers, or mothers in health tend to have higher final grades than other students. 
