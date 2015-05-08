@@ -70,4 +70,16 @@ summary(lm_sex)
 
 ```
 
-The average grade for females  is 12.25 whereas the average grade for Males is 11.40. The difference between the two is signifcant (p < 0.001); the R-squared is 0.015.
+The average grade for females  is 12.25 whereas the average grade for Males is 11.40. The difference between the two is significant (p < 0.001); the R-squared is 0.015.
+
+###Regression Using Family/Home Attributes
+
+```{r}
+lm_family <- lm(final_grade ~ fam_size + parents_cohabit + fam_edu_support + family_relationship + mom_edu + mom_job, data = data)
+
+summary(lm_family)
+```
+
+Note that `dad_edu` and `dad_job` were not used since they are highly correlated to `mom_edu` and `mom_job`, respectively.
+
+Out of the variables used, it looks like `mom_edu` has the only significant estimate. The estimate of `0.5132` suggests that each additional level of education reached by the mother corresponds with an additional `0.5132` points in the student's final grade in Portuguese.
