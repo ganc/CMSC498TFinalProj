@@ -2,7 +2,7 @@
 title: "ACM Final Project"
 author: "Alyster Alcudia, Cynthia Gan, Mihai Sirbu"
 date: "5/2/2015"
-output: pdf_document
+output: html_document
 ---
 
 ```{r, echo=FALSE, include=FALSE}
@@ -392,7 +392,7 @@ dad_edu_finals_plot <- ggplot(dad_edu_finals, aes(x=dad_edu_fac)) +
     geom_point(aes(y=mean_est), size=3, color='darkgreen') +
     geom_errorbar(aes(ymin=left_CI, ymax=right_CI), width=0.1) +
     labs(title="Estimated Mean Final Grade\nand 95% Confidence Interval\n
-        by Mother's Education Level", x="Mother's Education Level", 
+        by Father's Education Level", x="Father's Education Level", 
         y="Estimated Mean Final Grade")+
     ylim(5,15) + theme(axis.text.x=element_text(angle=50, vjust=0.5))
 
