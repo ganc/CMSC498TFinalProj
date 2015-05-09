@@ -1,6 +1,6 @@
 ---
 title: "ACM Preliminary Analysis"
-author: "Alyster Alucadia, Cynthia Gan, Mihai Sirbu"
+author: "Alyster Alcudia, Cynthia Gan, Mihai Sirbu"
 date: "Wednesday, May 06, 2015"
 output: pdf_document
 ---
