@@ -1,12 +1,18 @@
 ---
 title: "ACM Preliminary Analysis"
-author: "Alyster Alucadia, Cynthia Gan, Mihai Sirbu"
+author: "Alyster Alcudia, Cynthia Gan, Mihai Sirbu"
 date: "Wednesday, May 06, 2015"
 output: pdf_document
 ---
 
 ```{r, echo=FALSE, include=FALSE}
-library(dplyr)
+for(i in c("dplyr", "MASS")){
+    if( ! require( i , character.only = TRUE ) ){
+      #  If package was not able to be loaded then re-install
+      install.packages( i , dependencies = TRUE )
+      library( i , character.only = TRUE )
+    }
+}
 ```
 
 ###Read in Data
@@ -105,13 +111,15 @@ The combined adjusted R-Squared id about 0.134 which is very low. However, the p
 
 ###Regression with Hybrid Step-Wise Abroach 
 
-```{r}
+```{r, results="hide"}
 fit = lm(final_grade~.-grade_one-grade_two,data=data)
 step = stepAIC(fit, direction="both")
+```
+```{r}
 summary(step)
 ```
 
 The hybrid step-wise linear regression model builder results in 14 different variables. There are 4 variables with higher statistical significance than the others, the school the student attended, the number of previous failures the student has, whether or not the student had extra educational support, and whether or not the student wants a higher education. 
-Among these, the one that has the highest estimate on the influence is whether or not the student wants higher education, although all 4 variables have fairly similar estimates. That is also the only predictor that has a positive relationship with the final score. All the other predictors, including, surprisingly whether a sudent has extra educational support, have negative relationships. 
+Among these, the one that has the highest estimate on the influence is whether or not the student wants higher education, although all 4 variables have fairly similar estimates. That is also the only predictor that has a positive relationship with the final score. All the other predictors, including, surprisingly whether a student has extra educational support, have negative relationships. 
 
 Sadly, the adjusted R-squared is 0.3192. This is low enough that we cannot make  good predictions, even if we can identify influential factors.  
