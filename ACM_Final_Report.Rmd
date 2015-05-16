@@ -2,7 +2,7 @@
 title: "ACM Final Report"
 author: "Alyster Alcudia, Cynthia Gan, Mihai Sirbu"
 date: "Monday, May 18, 2015"
-output: pdf_document
+output: html_document
 ---
 
 ```{r, echo=FALSE, include=FALSE}
@@ -170,7 +170,8 @@ Describe the results you found. Make sure you quantify your findings (if inferen
 
 ###Regression with Hybrid Step-Wise Abroach 
 
-```{r, results="hide"}
+```{r}
+# ```{r, results="hide"}
 fit <- lm(final_grade~.-grade_one-grade_two,data=data)
 step2 <- stepAIC(fit, direction="both")
 
@@ -178,7 +179,7 @@ step2 <- stepAIC(fit, direction="both")
 summary(step2)
 ```
 
-Someone should take a few momements to interpret these results...
+Someone should take a few moments to interpret these results...
 
 
 The banding pattern of the residuals is WEIRD. We need to investigate why
@@ -199,12 +200,12 @@ lines(fitted_res$fitted[j], lw1$fitted[j], col="red",lwd=3)
 #This thing below takes FOREVER to run! (JUST FYI)
 
 ```{r, results="hide"}
-fit <- lm(final_grade~school*sex*mom_edu*studytime*failures*extra_school_support*
-           wants_higher_education*weekday_alcohol_cons*health, data=data)
-step <- stepAIC(fit, direction="both")
-
-
-summary(step)
+# fit <- lm(final_grade~school*sex*mom_edu*studytime*failures*extra_school_support*
+#            wants_higher_education*weekday_alcohol_cons*health, data=data)
+# step <- stepAIC(fit, direction="both")
+# 
+# 
+# summary(step)
 ```
 #Conclusion
 
