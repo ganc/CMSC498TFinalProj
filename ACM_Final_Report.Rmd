@@ -100,16 +100,16 @@ One obvious source for finding education data is the education.gov website.
 Unfortunately, the datasets we found (or our ability to extrac them) on 
 the website were simply too burdensome and unwielding given the timeframe of 
 this project. Nevertheless, given that we were still interested in an 
-education project we decided to use (clean) education data from the U.C. Irvinie 
+education project we decided to use (clean) education data from the U.C. Irvine 
 Machine Learning Repository. This dataset consisted of socioeconomic traits and language class grades of students in two Portugese secondary schools. 
 
-Given this dataset was tailored to a specific classes, the goal and task of
+Given this dataset was tailored to a specific class, the goal and task of
 this project morphed from understanding "what student demographics are 
 associated with positive student academic performance?" to "What can we infer
 about stduent demographics and academic achievement in a language class in 
 Portgual?". Moreover, the goal of this project was inference rather than any
 sort of specific prediction. Although the generalizability of our results is reduced in this case, we believe that trying to understand what variables are
-important in this dataset may provide insights to future education projects.  
+important in this dataset may provide insights to future education projects. 
 
 #Materials and Methods
 
