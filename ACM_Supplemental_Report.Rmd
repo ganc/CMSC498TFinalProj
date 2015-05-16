@@ -1,0 +1,98 @@
+---
+title: "Supplmental_Results"
+author: "Mihai Sirbu"
+date: "Saturday, May 16, 2015"
+output: html_document
+---
+
+I'm including this sheet because we may be doing a lot of random
+analyses and only a subset of them make it into the final report. 
+
+```{r, echo=FALSE, include=FALSE}
+for(i in c("dplyr", "MASS", "ggplot2")){
+    if( ! require( i , character.only = TRUE ) ){
+      #  If package was not able to be loaded then re-install
+      install.packages( i , dependencies = TRUE )
+      library( i , character.only = TRUE )
+    }
+}
+```
+
+###Read in Data
+
+```{r}
+data = as.tbl(read.csv("student-por.csv", sep=";", stringsAsFactors=TRUE))
+```
+
+###Rename the Variables
+
+```{r}
+
+rename_cols <- c(4:12,16:21,23:24,26:28,31:33)
+
+colnames(data)[rename_cols] = c("urban_rural",
+                                "fam_size",
+                                "parents_cohabit",
+                                "mom_edu",
+                                "dad_edu",
+                                "mom_job",
+                                "dad_job",
+                                "school_reason",
+                                "student_guardian",
+                                "extra_school_support",
+                                "fam_edu_support",
+                                "paid_extra_classes",
+                                "extracurricular_activities",
+                                "attended_nursery",
+                                "wants_higher_education",
+                                "has_romantic_partner",
+                                "family_relationship",
+                                "going_out_amount",
+                                "weekday_alcohol_cons",
+                                "weekend_alcohol_cons",
+                                "grade_one",
+                                "grade_two",
+                                "final_grade")
+```
+
+###Meaningful Variable Values
+
+```{r}
+data <-  data %>% 
+  mutate(school = ifelse(school=='GP', 'Gabriel Pereira', 'Mousinho da Silveira')) %>%
+  mutate(urban_rural = ifelse(urban_rural=='R', 'Rural', 'Urban')) %>% 
+  mutate(fam_size = ifelse(fam_size=='GT3', '>3', '<=3')) %>%
+  mutate(parents_cohabit = ifelse(parents_cohabit=='A', 'Apart', 'Together')) %>%
+  mutate_each_(funs(ifelse(.=='yes', TRUE, FALSE)), 
+               c("extra_school_support", "fam_edu_support", "paid_extra_classes", 
+                 "extracurricular_activities", "attended_nursery", 
+                 "wants_higher_education", "internet", "has_romantic_partner"))
+  
+```
+
+```{r, results="hide"}
+fit <- lm(final_grade~.-grade_one-grade_two,data=data)
+step2 <- stepAIC(fit, direction="both")
+
+
+summary(step2)
+```
+
+Someone should take a few momements to interpret these results...
+
+
+The banding pattern of the residuals is WEIRD. We need to investigate why
+this is. 
+```{r}
+fitted_res <- as.tbl(data.frame(fitted = fitted(step2), res = residuals(step2)))
+
+data_fitted_res <- as.tbl(cbind(data, fitted_res))
+
+#Normal
+data_fitted_res %>%
+  ggplot(aes(x=fitted, y=res)) +geom_point()
+
+data_fitted_res %>%
+  ggplot(aes(x=fitted, y=res, color=extra_school_support)) +geom_point()
+
+```
