@@ -2,7 +2,7 @@
 title: "ACM Final Report"
 author: "Alyster Alcudia, Cynthia Gan, Mihai Sirbu"
 date: "Monday, May 18, 2015"
-output: pdf_document
+output: html_document
 ---
 
 ```{r, echo=FALSE, include=FALSE}
@@ -169,15 +169,11 @@ The variables that we had available to us were as follows:
 As you can see, there are actually three target variables we could use as our response measure (grade one, grade two, and final grade). In our exploratory data analysis section of the project however, we found that these three response variables had very correlations between each other (all above 0.82). Consequently, we decided to only use final grade as our response AND made sure not to use grade one or grade two in
 our subsequent model. 
 
-#Cynthia could you describe StepAIC here? (Of course we need to add more details about the analysis method too haha)
-
-We decided to start our analysis with the a stepwise regression, optimizing the  Akaike information criterion (AIC) with a function $stepAIC$ from the $MASS$ library. This function starts off with a model, in this case, a linear model with all the depedent variables with no interations, and iteratively adds and removes predictors as it tries to improve the AIC. 
+We decided to start our analysis with the a stepwise regression, optimizing the  Akaike information criterion (AIC) with a function stepAIC from the MASS library. This function starts off with a model, in this case, a linear model with all the depedent variables with no interations, and iteratively adds and removes predictors as it tries to improve the AIC. 
 
 #Results
 
 ##Evolution of a Linear Model
-
-Describe the results you found. Make sure you quantify your findings (if inference, provide interpretation of resulting model. E.g., we found that house prices increase by $10,000 (P<0.05) on average when they are within 5 miles of a university campus; if prediction, we found we could predict house prices with mean squared error of $10,000.
 
 ###Regression with Hybrid Step-Wise Abroach 
 
@@ -188,7 +184,7 @@ step <- stepAIC(fit, direction="both")
 
 
 ```{r}
-summary(step2)
+summary(step)
 ```
 
 The result of the step-wise regression was a model with 14 predictors, and an adjusted R-squared of `r summary(step)$adj.r.squared`, the majority of these predicts were statistically significant. Attending Mousinho da Silveira over Gabriel Pereira, being male, failing a class previously, having extra educational support, and coming alcohol on a weekday all had statistically significant negative relationships with final grades. Meanwhile, desiring a higher education and having a mother with a good education had statistically significant positive relationships with final grade.  
@@ -200,7 +196,7 @@ While an adjusted R-squared of `r summary(step)$adj.r.squared` seems bad, fittin
 
 ```{r}
 fitall <- lm(final_grade~school*sex*mom_edu*studytime*failures*extra_school_support*wants_higher_education*weekday_alcohol_cons*health, data=data)
-summary(fitall)
+summary(fitall)[c("call", "r.squared", "adj.r.squared", "df", "fstatistic")]
 ```
 
 A linear model that accounts for every single possible interaction between predictors has an adjusted-square of `r summary(fitall)$adj.r.squared`. The additional multitude of variables only increased the adjusted percent variation explained by the variables by `r summary(fitall)$adj.r.squared - summary(step)$adj.r.squared`.  
@@ -212,7 +208,7 @@ While not a huge gain, it is also non-negligible.
 ```{r}
 fit2 = lm(formula = final_grade ~ school * mom_edu * failures * extra_school_support * 
             wants_higher_education * weekday_alcohol_cons, data = data)
-summary(fit2)
+summary(fit2)[c("call", "r.squared", "adj.r.squared", "df", "fstatistic")]
 ```
 
 Accounting only for the 5 most statistically significant variables from the step-wise no-interaction regression and their interactions, we still manage to capture `r summary(step)$adj.r.squared` of the variation. That's a `r summary(fitall)$adj.r.squared - summary(fit2)$adj.r.squared` difference with only a fraction of the variables. 
@@ -226,7 +222,7 @@ summary(fit3)
 
 ###Final Model
 
-Our final model has an adjusted r-squared of `r summary(fit3)$adj.r.squared`. While it is lower than the all encompassing model's adjusted r-squared of `r summary(fitall)$adj.r.squared`, it only depends on `r 2**3 + 5` terms instead of `r 2**30`. It captures `r summary(fit3)$adj.r.squared/summary(fitall)$adj.r.squared` of the variation explained by the complete model, and is far more interpretable. 
+Our final model has an adjusted r-squared of `r summary(fit3)$adj.r.squared`. While it is lower than the all encompassing model's adjusted r-squared of `r summary(fitall)$adj.r.squared`, it only depends on `r length(summary(fit3)$coefficients[,1])` terms instead of `r length(summary(fitall)$coefficients[,1])`. It captures `r summary(fit3)$adj.r.squared/summary(fitall)$adj.r.squared` of the variation explained by the complete model, and is far more interpretable. 
 
 The final model depends on 5 predictors to predict the students final grade. While the model performs too poorly to actually predict anything, which variables and interactions were important can be meaningful.
 The 5 variables that we used were:
@@ -266,7 +262,7 @@ Though the points are centered around 0, the residuals exhibit a strange pattern
 ```{r}
 fitted3_res <- as.tbl(data.frame(fitted = fitted(fit3), res = residuals(fit3)))
 data_fitted3_res <- as.tbl(cbind(data, fitted3_res))
-ggplot(data_ffit_res, aes(x = final_grade, y = fitted)) + geom_point(alpha=0.2) + geom_abline(intercept=0, slope=1, colour="red")
+ggplot(data_fitted3_res, aes(x = final_grade, y = fitted)) + geom_point(alpha=0.2) + geom_abline(intercept=0, slope=1, colour="red")
 ```
 _The red line represents the ideal y=x, where the fitted value matches the actual value._
 
