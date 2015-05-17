@@ -111,7 +111,12 @@ Portugal?". Moreover, the goal of this project was inference rather than any
 sort of specific prediction. Although the generalizability of our results is reduced in this case, we believe that trying to understand what variables are
 important in this dataset may provide insights to future education projects.
 
+Researchers Paulo Cortez and Alice Silva from the University of Minho had previously used this dataset for modeling[^1]. Their main goals were to build binary (pass/fail) classification, 5-level classification, and regression models for prediction purposes. Their methods included Decision Trees, Random Forest, Neural Networks
+and Support Vector Machines.
 
+Although they were primarily focused on prediction, their Random Forest analysis yielded relative importance of variables used in their models. Our focus, however, is on the interpretability of model estimates.
+
+[^1]:P. Cortez and A. Silva. Using Data Mining to Predict Secondary School Student Performance. In A. Brito and J. Teixeira Eds., Proceedings of 5th FUture BUsiness TEChnology Conference (FUBUTEC 2008) pp. 5-12, Porto, Portugal, April, 2008, EUROSIS, ISBN 978-9077381-39-7. 
 
 #Materials and Methods
 
