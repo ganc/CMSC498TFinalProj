@@ -2,7 +2,7 @@
 title: "ACM Final Report"
 author: "Alyster Alcudia, Cynthia Gan, Mihai Sirbu"
 date: "Monday, May 18, 2015"
-output: html_document
+output: pdf_document
 ---
 
 ```{r, echo=FALSE, include=FALSE}
@@ -70,17 +70,17 @@ data <-  data %>%
 #Summary
 
 1) Describe the task you performed (in one sentence). 
-   The task ofthis project was to understand what student demographics are 
+   The task of this project was to understand what student demographics are 
    associated with positive academic achievement in a language class in
    Portugal. 
 2) Describe the data you used (in one sentence). 
    The dataset we used was from the UCI Machine Learning Repository and 
-   consistend of socioeconomic traits and langauge class grades of students
+   consisted of socioeconomic traits and language class grades of students
    in two Portuguese secondary schools. 
 3) Describe the analysis method you used (in one sentence).
    For this project, we used linear regression to examine the relationship 
    between student demographics and final grade (our operationalization of
-   academic achievement) because we believed it would give us interpreteable 
+   academic achievement) because we believed it would give us interpretative 
    results. 
 4) Summarize your results (in one or two sentences).
 
@@ -97,19 +97,21 @@ background. In our view, understanding the relationship between student
 characteristics and positive outcomes would 
 
 One obvious source for finding education data is the education.gov website. 
-Unfortunately, the datasets we found (or our ability to extrac them) on 
-the website were simply too burdensome and unwielding given the timeframe of 
+Unfortunately, the datasets we found (or our ability to extract them) on 
+the website were simply too burdensome and unwieldy given the time frame of 
 this project. Nevertheless, given that we were still interested in an 
 education project we decided to use (clean) education data from the U.C. Irvine 
-Machine Learning Repository. This dataset consisted of socioeconomic traits and language class grades of students in two Portugese secondary schools. 
+Machine Learning Repository. This dataset consisted of socioeconomic traits and language class grades of students in two Portuguese secondary schools. 
 
 Given this dataset was tailored to a specific class, the goal and task of
 this project morphed from understanding "what student demographics are 
 associated with positive student academic performance?" to "What can we infer
-about stduent demographics and academic achievement in a language class in 
-Portgual?". Moreover, the goal of this project was inference rather than any
+about student demographics and academic achievement in a language class in 
+Portugal?". Moreover, the goal of this project was inference rather than any
 sort of specific prediction. Although the generalizability of our results is reduced in this case, we believe that trying to understand what variables are
-important in this dataset may provide insights to future education projects. 
+important in this dataset may provide insights to future education projects.
+
+
 
 #Materials and Methods
 
@@ -117,7 +119,7 @@ important in this dataset may provide insights to future education projects.
 
 As mentioned above the dataset was the "Student Performance Data Set" from the
 UCI Machine Learning Repository (https://archive.ics.uci.edu/ml/datasets/Student+Performance).
-The dataset consisted of socioeconomic traits and language class grades of students in two Portguese secondary schools and
+The dataset consisted of socioeconomic traits and language class grades of students in two Portuguese secondary schools and
 was compiled from school reports and questionnaires. All in all
 we had 649 observations and 33 variables. 
 
@@ -170,12 +172,13 @@ Describe the results you found. Make sure you quantify your findings (if inferen
 
 ###Regression with Hybrid Step-Wise Abroach 
 
-```{r}
-# ```{r, results="hide"}
+```{r, results="hide"}
 fit <- lm(final_grade~.-grade_one-grade_two,data=data)
 step2 <- stepAIC(fit, direction="both")
+```
 
 
+```{r}
 summary(step2)
 ```
 
