@@ -169,43 +169,108 @@ The variables that we had available to us were as follows:
 As you can see, there are actually three target variables we could use as our response measure (grade one, grade two, and final grade). In our exploratory data analysis section of the project however, we found that these three response variables had very correlations between each other (all above 0.82). Consequently, we decided to only use final grade as our response AND made sure not to use grade one or grade two in
 our subsequent model. 
 
-#Cynthia could you describe StepAIC here? (Of course we need to add more details about the analysis method too haha)
+We decided to start our analysis with the a stepwise regression, optimizing the  Akaike information criterion (AIC) with a function stepAIC from the MASS library. This function starts off with a model, in this case, a linear model with all the depedent variables with no interations, and iteratively adds and removes predictors as it tries to improve the AIC. 
 
 #Results
 
-Describe the results you found. Make sure you quantify your findings (if inference, provide interpretation of resulting model. E.g., we found that house prices increase by $10,000 (P<0.05) on average when they are within 5 miles of a university campus; if prediction, we found we could predict house prices with mean squared error of $10,000.
+##Evolution of a Linear Model
 
 ###Regression with Hybrid Step-Wise Abroach 
 
 ```{r, results="hide"}
 fit <- lm(final_grade~.-grade_one-grade_two,data=data)
-step2 <- stepAIC(fit, direction="both")
+step <- stepAIC(fit, direction="both")
 ```
 
 ```{r}
-summary(step2)
+summary(step)
 ```
 
-The most significant variables from the above model are the intercept, `schoolMousinho da Silveira`, `failures`, `extra_school_supportTRUE`, `wants_higher_educationTRUE`. The intercept value is difficult to interpret considering the number of variables and types of variables involved in the model. 
+The result of the step-wise regression was a model with 14 predictors, and an adjusted R-squared of `r summary(step)$adj.r.squared`, the majority of these predicts were statistically significant. Attending Mousinho da Silveira over Gabriel Pereira, being male, failing a class previously, having extra educational support, and coming alcohol on a weekday all had statistically significant negative relationships with final grades. Meanwhile, desiring a higher education and having a mother with a good education had statistically significant positive relationships with final grade.  
 
-The `schoolMousinho da Silveira` estimate of `-1.51318` suggests that, on average, Mousinho da Silveira had about `1.5` final grade points less than Gabriel Pereira. The `failures` estimate of `-1.48437` suggests that each previous class failure relates to about `1.4` points less on the final grade. 
+###Comparison with Complete Model
 
-The `extra_school_supportTRUE` estimate of `-1.33575` suggests that, on average, students who have extra educational support have about `1.3` final grade points less than those who do not. This might seem counterintuitive
+While an adjusted R-squared of `r summary(step)$adj.r.squared` seems bad, fitting a model that accounts for every possible interaction between the predictors doesn't result in a significantly better adjusted R-squared.
 
-The banding pattern of the residuals is WEIRD. We need to investigate why
-this is. (See other document to see how I've been temporarily trying to do 
-that)
 ```{r}
-fitted_res <- as.tbl(data.frame(fitted = fitted(step2), res = residuals(step2)))
+fitall <- lm(final_grade~school*sex*mom_edu*studytime*failures*extra_school_support*wants_higher_education*weekday_alcohol_cons*health, data=data)
+summary(fitall)[c("call", "r.squared", "adj.r.squared", "df", "fstatistic")]
+```
+
+A linear model that accounts for every single possible interaction between predictors has an adjusted-square of `r summary(fitall)$adj.r.squared`. The additional multitude of variables only increased the adjusted percent variation explained by the variables by `r summary(fitall)$adj.r.squared - summary(step)$adj.r.squared`.  
+
+While not a huge gain, it is also non-negligible. 
+
+###Compromise between Number of Terms and R-Squared
+
+```{r}
+fit2 = lm(formula = final_grade ~ school * mom_edu * failures * extra_school_support * 
+            wants_higher_education * weekday_alcohol_cons, data = data)
+summary(fit2)[c("call", "r.squared", "adj.r.squared", "df", "fstatistic")]
+```
+
+Accounting only for the 5 most statistically significant variables from the step-wise no-interaction regression and their interactions, we still manage to capture `r summary(step)$adj.r.squared` of the variation. That's a `r summary(fitall)$adj.r.squared - summary(fit2)$adj.r.squared` difference with only a fraction of the variables. 
+
+To further simplify the model, we looked at only the most statistically significant interactions, and then manually factored the variables to produce a more legible formula describing the model. This resulted in our final model.
+
+```{r}
+fit3 = lm(final_grade ~ failures + wants_higher_education + school + extra_school_support + mom_edu + weekday_alcohol_cons + (school:extra_school_support)*(mom_edu*weekday_alcohol_cons), data=data)
+summary(fit3)
+```
+
+###Final Model
+
+Our final model has an adjusted r-squared of `r summary(fit3)$adj.r.squared`. While it is lower than the all encompassing model's adjusted r-squared of `r summary(fitall)$adj.r.squared`, it only depends on `r length(summary(fit3)$coefficients[,1])` terms instead of `r length(summary(fitall)$coefficients[,1])`. It captures `r summary(fit3)$adj.r.squared/summary(fitall)$adj.r.squared` of the variation explained by the complete model, and is far more interpretable. 
+
+The final model depends on 5 predictors to predict the students final grade. While the model performs too poorly to actually predict anything, which variables and interactions were important can be meaningful.
+The 5 variables that we used were:
+* school - student's school ("Gabriel Pereira" or "Mousinho da Silveira")
+* mom_edu - mother's education (0 - none,  1 - primary education (4th grade), 2 – 5th to 9th grade, 3 – secondary education or 4 – higher education)
+* failures - number of past class failures (1, 2, 3, or 4 (with 4 representing 4 or more))
+* extra\_school\_support - extra educational support (TRUE or FALSE)
+* weekday\_alcohol\_cons - workday alcohol consumption (from 1 - very low to 5 - very high)
+
+For how variables interacted with each other, we found that in statistically significant interaction terms in earlier models, which school and extra school support always influenced the same things, so could be grouped together. Meanwhile, failure rate and the desire for higher education did not significantly interact with any other variable, so could be isolated. Therefore, we only had 3 terms interacting with each other, and 8 interaction terms: the school/extra school support pair, mother's education, and weekday alcohol consumption.
+
+A few notable relationships are:
+
+* The most statistically significant relationships:
+  + Each past failure of a class results in a 1.59 point drop in predicted final grade
+  + Desiring higher education results in an almost 2 point rise in predict final grade
+* The most dramatic relationships:
+  + Receiving extra school support from Mousinho da Silveira results in an approximately 23 rise in predicted final grade
+  + Each increase in tier of amount of alcohol consumed on a weekday results in a fifteen point decrease in predicted final grade
+  
+##Model Evaluation
+
+###Residuals
+
+```{r}
+fitted_res <- as.tbl(data.frame(fitted = fitted(fit3), res = residuals(fit3)))
 
 lw1 <- loess(res ~ fitted, data=fitted_res)
 plot(res~fitted, data=fitted_res, main = "Residuals against fitted values", 
      xlab="fitted values", ylab="residuals")
 j <- order(fitted_res$fitted)
 lines(fitted_res$fitted[j], lw1$fitted[j], col="red",lwd=3)
-
 ```
 
+Though the points are centered around 0, the residuals exhibit a strange pattern. There is clear heteroscedasticity, the spread of the residuals increases dramatically as the predicted value increases. There is also the presence of diagonal streaks in the residuals. Both of these phenomena become more clear if you examine a plot of fitted value vs true value, another view of the same information as a residual plot, and the density plot of final grades. 
+
+```{r}
+fitted3_res <- as.tbl(data.frame(fitted = fitted(fit3), res = residuals(fit3)))
+data_fitted3_res <- as.tbl(cbind(data, fitted3_res))
+ggplot(data_fitted3_res, aes(x = final_grade, y = fitted)) + geom_point(alpha=0.2) + geom_abline(intercept=0, slope=1, colour="red")
+```
+_The red line represents the ideal y=x, where the fitted value matches the actual value._
+
+This plot is a rotation of the previous residual plot. With these axes, it becomes clear that the streaks result from actual result, final grade, being limited to integer values. It is also more clear that the model mysteriously experiences a ceiling of a score of 14, resulting in the clean cut off on the right side of the residual plot. 
+
+```{r}
+ggplot(data) + geom_density(aes(x=final_grade))
+```
+
+The distribution of scores is bears a resemblance to the distribution of residuals. Both are vaguely triangular, with a peak at about 10 points, and decreasing linearly past that. Our model performs quite poorly, and appears lack sufficient data. One possible hypothesis for the varying spread is that the plethora of students receiving 10 points had a wide variety of socioeconomic backgrounds, resulting in different point predictions due to the poor model, and causing a wide range of residuals. As fewer students get a particular score, they grow more similar to each other in socioeconomic terms, resulting in more accurate predictions. 
 
 #This thing below takes FOREVER to run! (JUST FYI)
 
