@@ -186,7 +186,11 @@ step2 <- stepAIC(fit, direction="both")
 summary(step2)
 ```
 
-The most significant variables from the above model are the intercept, `schoolMousinho da Silveira`, `failures`, `extra_school_supportTRUE`, `wants_higher_educationTRUE`. The intercept value is difficult to interpret considering the number of variables and types of variables involved in the model. The `schoolMousinho da Silveira` estimate of `-1.51318` suggests that, on average, Mousinho da Silveira had about `1.5` final grade points less than Gabriel Pereira.
+The most significant variables from the above model are the intercept, `schoolMousinho da Silveira`, `failures`, `extra_school_supportTRUE`, `wants_higher_educationTRUE`. The intercept value is difficult to interpret considering the number of variables and types of variables involved in the model. 
+
+The `schoolMousinho da Silveira` estimate of `-1.51318` suggests that, on average, Mousinho da Silveira had about `1.5` final grade points less than Gabriel Pereira. The `failures` estimate of `-1.48437` suggests that each previous class failure relates to about `1.4` points less on the final grade. 
+
+The `extra_school_supportTRUE` estimate of `-1.33575` suggests that, on average, students who have extra educational support have about `1.3` final grade points less than those who do not. This might seem counterintuitive
 
 The banding pattern of the residuals is WEIRD. We need to investigate why
 this is. (See other document to see how I've been temporarily trying to do 
