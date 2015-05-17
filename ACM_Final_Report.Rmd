@@ -182,13 +182,11 @@ fit <- lm(final_grade~.-grade_one-grade_two,data=data)
 step2 <- stepAIC(fit, direction="both")
 ```
 
-
 ```{r}
 summary(step2)
 ```
 
-Someone should take a few moments to interpret these results...
-
+The most significant variables from the above model are the intercept, `schoolMousinho da Silveira`, `failures`, `extra_school_supportTRUE`, `wants_higher_educationTRUE`. The intercept value is difficult to interpret considering the number of variables and types of variables involved in the model. The `schoolMousinho da Silveira` estimate of `-1.51318` suggests that, on average, Mousinho da Silveira had about `1.5` final grade points less than Gabriel Pereira.
 
 The banding pattern of the residuals is WEIRD. We need to investigate why
 this is. (See other document to see how I've been temporarily trying to do 
