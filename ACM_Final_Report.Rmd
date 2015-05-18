@@ -168,7 +168,9 @@ The variables that we had available to us were as follows:
 
 As you can see, there are actually three target variables we could use as our response measure (grade one, grade two, and final grade). In our exploratory data analysis section of the project however, we found that these three response variables had very high correlations between each other (all above 0.82). Consequently, we decided to only use final grade as our response AND made sure not to use grade one or grade two in our subsequent model. 
 
-We decided to start our analysis with the a stepwise regression, optimizing the  Akaike information criterion (AIC) with a function stepAIC from the MASS library. This function starts off with a model, in this case, a linear model with all the depedent variables with no interations, and iteratively adds and removes predictors as it tries to improve the AIC. 
+Because interpretability of our results was key, we decided to use linear regression. However, because we had 33 possible variables to examine (plus an even greater number of interactions), We decided to start our analysis with the a stepwise regression, optimizing the  Akaike information criterion (AIC) with a function stepAIC from the MASS library. This function starts off with a model, in this case, a linear model with all the dependent variables with no interations, and iteratively adds and removes predictors as it tries to improve the AIC. 
+
+Once we identified key variables in the linear model with all dependent variables but no interactions, we added interaction terms based on significant variables. The goal throughout this step was two-fold: improve adjusted R^2 while also making sure our results were still interpretable. Our models' inference performance was being evaluated based adjusted R^ as well as subsequent residual graphs (to test things like the presence of heteroscedascity).
 
 #Results
 
@@ -278,16 +280,7 @@ ggplot(data) + geom_density(aes(x=final_grade))
 
 The distribution of scores is bears a resemblance to the distribution of residuals. Both are vaguely triangular, with a peak at about 10 points, and decreasing linearly past that. Our model performs quite poorly, and appears lack sufficient data. One possible hypothesis for the varying spread is that the plethora of students receiving 10 points had a wide variety of socioeconomic backgrounds. Therefore, there were different point predictions due to the poor model, causing a wide range of residuals. As fewer students get a particular score, they grow more similar to each other in socioeconomic terms, resulting in more accurate predictions. 
 
-#This thing below takes FOREVER to run! (JUST FYI)
 
-```{r, results="hide"}
-# fit <- lm(final_grade~school*sex*mom_edu*studytime*failures*extra_school_support*
-#            wants_higher_education*weekday_alcohol_cons*health, data=data)
-# step <- stepAIC(fit, direction="both")
-# 
-# 
-# summary(step)
-```
 #Conclusion
 
 (1/2 page): Concluding remarks summarizing findings and discussing possible improvements to your analysis.
