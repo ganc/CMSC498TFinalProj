@@ -80,7 +80,7 @@ data <-  data %>%
 3) Describe the analysis method you used (in one sentence).
    For this project, we used linear regression to examine the relationship 
    between student demographics and final grade (our operationalization of
-   academic achievement) because we believed it would give us interpretative 
+   academic achievement) because we believed it would give us interpretable 
    results. 
 4) Summarize your results (in one or two sentences).
 
@@ -166,7 +166,7 @@ The variables that we had available to us were as follows:
 * __grade_two__ - second period Portuguese grade (from 0 to 20)
 * __final_grade__ - final Portuguese grade (from 0 to 20)
 
-As you can see, there are actually three target variables we could use as our response measure (grade one, grade two, and final grade). In our exploratory data analysis section of the project however, we found that these three response variables had very correlations between each other (all above 0.82). Consequently, we decided to only use final grade as our response AND made sure not to use grade one or grade two in
+As you can see, there are actually three target variables we could use as our response measure (grade one, grade two, and final grade). In our exploratory data analysis section of the project however, we found that these three response variables had very high correlations between each other (all above 0.82). Consequently, we decided to only use final grade as our response AND made sure not to use grade one or grade two in
 our subsequent model. 
 
 We decided to start our analysis with the a stepwise regression, optimizing the  Akaike information criterion (AIC) with a function stepAIC from the MASS library. This function starts off with a model, in this case, a linear model with all the depedent variables with no interations, and iteratively adds and removes predictors as it tries to improve the AIC. 
@@ -193,7 +193,9 @@ The result of the step-wise regression was a model with 14 predictors, and an ad
 While an adjusted R-squared of `r summary(step)$adj.r.squared` seems bad, fitting a model that accounts for every possible interaction between the predictors doesn't result in a significantly better adjusted R-squared.
 
 ```{r}
-fitall <- lm(final_grade~school*sex*mom_edu*studytime*failures*extra_school_support*wants_higher_education*weekday_alcohol_cons*health, data=data)
+fitall <- lm(final_grade~school*sex*mom_edu*studytime*failures*
+               extra_school_support*wants_higher_education*
+               weekday_alcohol_cons*health, data=data)
 summary(fitall)[c("call", "r.squared", "adj.r.squared", "df", "fstatistic")]
 ```
 
@@ -204,7 +206,8 @@ While not a huge gain, it is also non-negligible.
 ###Compromise between Number of Terms and R-Squared
 
 ```{r}
-fit2 = lm(formula = final_grade ~ school * mom_edu * failures * extra_school_support * 
+fit2 = lm(formula = final_grade ~ school * mom_edu * 
+            failures * extra_school_support * 
             wants_higher_education * weekday_alcohol_cons, data = data)
 summary(fit2)[c("call", "r.squared", "adj.r.squared", "df", "fstatistic")]
 ```
@@ -214,7 +217,9 @@ Accounting only for the 5 most statistically significant variables from the step
 To further simplify the model, we looked at only the most statistically significant interactions, and then manually factored the variables to produce a more legible formula describing the model. This resulted in our final model.
 
 ```{r}
-fit3 = lm(final_grade ~ failures + wants_higher_education + school + extra_school_support + mom_edu + weekday_alcohol_cons + (school:extra_school_support)*(mom_edu*weekday_alcohol_cons), data=data)
+fit3 = lm(final_grade ~ failures + wants_higher_education + school + 
+            extra_school_support + mom_edu + weekday_alcohol_cons + 
+            (school:extra_school_support)*(mom_edu*weekday_alcohol_cons), data=data)
 summary(fit3)
 ```
 
@@ -235,11 +240,11 @@ For how variables interacted with each other, we found that in statistically sig
 A few notable relationships are:
 
 * The most statistically significant relationships:
-  + Each past failure of a class results in a 1.59 point drop in predicted final grade
-  + Desiring higher education results in an almost 2 point rise in predict final grade
+    + Each past failure of a class results in a 1.59 point drop in predicted final grade
+    + Desiring higher education results in an almost 2 point rise in predict final grade
 * The most dramatic relationships:
-  + Receiving extra school support from Mousinho da Silveira results in an approximately 23 rise in predicted final grade
-  + Each increase in tier of amount of alcohol consumed on a weekday results in a fifteen point decrease in predicted final grade
+    + Receiving extra school support from Mousinho da Silveira results in an approximately 23 rise in predicted final grade
+    + Each increase in tier of amount of alcohol consumed on a weekday results in a fifteen point decrease in predicted final grade
   
 ##Model Evaluation
 
@@ -260,17 +265,19 @@ Though the points are centered around 0, the residuals exhibit a strange pattern
 ```{r}
 fitted3_res <- as.tbl(data.frame(fitted = fitted(fit3), res = residuals(fit3)))
 data_fitted3_res <- as.tbl(cbind(data, fitted3_res))
-ggplot(data_fitted3_res, aes(x = final_grade, y = fitted)) + geom_point(alpha=0.2) + geom_abline(intercept=0, slope=1, colour="red")
+ggplot(data_fitted3_res, aes(x = final_grade, y = fitted)) + 
+  geom_point(alpha=0.2) + 
+  geom_abline(intercept=0, slope=1, colour="red")
 ```
 _The red line represents the ideal y=x, where the fitted value matches the actual value._
 
-This plot is a rotation of the previous residual plot. With these axes, it becomes clear that the streaks result from actual result, final grade, being limited to integer values. It is also more clear that the model mysteriously experiences a ceiling of a score of 14, resulting in the clean cut off on the right side of the residual plot. 
+This plot is a rotation of the previous residual plot. With these axes, it becomes clear that the streaks result from actual result, i.e. the final grade, being limited to integer values. It is also more clear that the model mysteriously experiences a ceiling of a score of 14, resulting in the clean cut off on the right side of the residual plot. 
 
 ```{r}
 ggplot(data) + geom_density(aes(x=final_grade))
 ```
 
-The distribution of scores is bears a resemblance to the distribution of residuals. Both are vaguely triangular, with a peak at about 10 points, and decreasing linearly past that. Our model performs quite poorly, and appears lack sufficient data. One possible hypothesis for the varying spread is that the plethora of students receiving 10 points had a wide variety of socioeconomic backgrounds, resulting in different point predictions due to the poor model, and causing a wide range of residuals. As fewer students get a particular score, they grow more similar to each other in socioeconomic terms, resulting in more accurate predictions. 
+The distribution of scores is bears a resemblance to the distribution of residuals. Both are vaguely triangular, with a peak at about 10 points, and decreasing linearly past that. Our model performs quite poorly, and appears lack sufficient data. One possible hypothesis for the varying spread is that the plethora of students receiving 10 points had a wide variety of socioeconomic backgrounds. Therefore, there were different point predictions due to the poor model, causing a wide range of residuals. As fewer students get a particular score, they grow more similar to each other in socioeconomic terms, resulting in more accurate predictions. 
 
 #This thing below takes FOREVER to run! (JUST FYI)
 
@@ -285,3 +292,4 @@ The distribution of scores is bears a resemblance to the distribution of residua
 #Conclusion
 
 (1/2 page): Concluding remarks summarizing findings and discussing possible improvements to your analysis.
+
