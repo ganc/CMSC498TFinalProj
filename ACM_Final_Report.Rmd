@@ -281,7 +281,7 @@ This plot is a rotation of the previous residual plot. With these axes, it becom
 ggplot(data) + geom_density(aes(x=final_grade))
 ```
 
-The distribution of scores is bears a resemblance to the distribution of residuals. Both are vaguely triangular, with a peak at about 10 points, and decreasing linearly past that. Our model performs quite poorly, and appears lack sufficient data. One possible hypothesis for the varying spread is that the plethora of students receiving 10 points had a wide variety of socioeconomic backgrounds. Therefore, there were different point predictions due to the poor model, causing a wide range of residuals. As fewer students get a particular score, they grow more similar to each other in socioeconomic terms, resulting in more accurate predictions. 
+The distribution of scores is bears a resemblance to the distribution of residuals. Both are vaguely triangular, with a peak at about 10 points, and decreasing linearly past that. Our model performs quite poorly, and appears to lack sufficient data. One possible hypothesis for the varying spread is that the plethora of students receiving 10 points had a wide variety of socioeconomic backgrounds. Therefore, there were different point predictions due to the poor model, causing a wide range of residuals. As fewer students get a particular score, they grow more similar to each other in socioeconomic terms, resulting in more accurate predictions. 
 
 #Conclusion
 
@@ -291,6 +291,8 @@ The three models used in our analysis each had low adjusted R-squared values. Ev
 
 We found that a simpler model can capture much (about `r summary(fit3)$adj.r.squared/summary(fitall)$adj.r.squared`) of the variation explained by the complete model. Furthermore, this simpler model has the benefit of more interpretable results. 
 
-The heteroscedasticity of residuals suggests that we could try to transform the `final_grade` response using a concave function such as `sqrt()` or `log()`. However, such a transformation would make comparisons between other models more difficult. 
-Other things to talk about are: how could we improve it (gather additional data, derive new features from existing data, using non-linear transformations, etc. etc.)
+The heteroscedasticity of residuals suggests that we could try to transform the `final_grade` response using a concave function such as `sqrt()` or `log()`. However, such a transformation would make comparisons between other models more difficult.
 
+Non-linear transformations of the data variables themselves could possibly improve our models. This approach would require much more time simply because of the number of variables involved. A possible benefit of this approach would be a deeper understanding of the relationship between variables and responses. Since our main focus is on inference, non-linear transformations could help further reveal important relationships. A related approach would be to derive new features from our current data; for example, Bill James's Pythagorean expectation formula for baseball teams, which is derived from the numbers of runs scored and runs allowed. However, this would require more research to find relationships between predictors and possibly a lot of formula tuning.
+
+Gathering additional data might also be useful, but finding good data to cross reference with our current data would be difficult. Perhaps a more detailed and more comprehensive survey might have revealed more relationships. 
