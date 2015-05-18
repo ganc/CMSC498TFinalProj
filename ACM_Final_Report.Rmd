@@ -83,7 +83,10 @@ data <-  data %>%
    academic achievement) because we believed it would give us interpretable 
    results. 
 4) Summarize your results (in one or two sentences).
-   
+   None of our three models -- a step-wise regression model, a complete 
+   model with interaction terms, and a simplified model with interaction 
+   terms -- performed well with respect to adjusted R-squared values. 
+   However, the simplified model yielded more interpretable results.
 
 #Introduction
 
@@ -169,9 +172,9 @@ The variables that we had available to us were as follows:
 
 As you can see, there are actually three target variables we could use as our response measure (grade one, grade two, and final grade). In our exploratory data analysis section of the project however, we found that these three response variables had very high correlations between each other (all above 0.82). Consequently, we decided to only use final grade as our response AND made sure not to use grade one or grade two in our subsequent model. 
 
-Because interpretability of our results was key, we decided to use linear regression. However, because we had 33 possible variables to examine (plus an even greater number of interactions), We decided to start our analysis with the a stepwise regression, optimizing the  Akaike information criterion (AIC) with a function stepAIC from the MASS library. This function starts off with a model, in this case, a linear model with all the dependent variables with no interations, and iteratively adds and removes predictors as it tries to improve the AIC. 
+Because interpretability of our results was key, we decided to use linear regression. However, because we had 33 possible variables to examine (plus an even greater number of interactions), We decided to start our analysis with the a stepwise regression, optimizing the Akaike information criterion (AIC) with a function stepAIC from the MASS library. This function starts off with a model, in this case, a linear model with all the dependent variables with no interactions, and iteratively adds and removes predictors as it tries to improve the AIC. 
 
-Once we identified key variables in the linear model with all dependent variables but no interactions, we added interaction terms based on significant variables. The goal throughout this step was two-fold: improve adjusted R^2 while also making sure our results were still interpretable. Our models' inference performance was being evaluated based adjusted R^ as well as subsequent residual graphs (to test things like the presence of heteroscedascity).
+Once we identified key variables in the linear model with all dependent variables but no interactions, we added interaction terms based on significant variables. The goal throughout this step was two-fold: improve adjusted R^2 while also making sure our results were still interpretable. Our models' inference performance was being evaluated based adjusted R^ as well as subsequent residual graphs (to test things like the presence of heteroscedasticity).
 
 #Results
 
@@ -179,7 +182,7 @@ Results (about 3 pages): Describe the results you found. Make sure you quantify 
 
 ##Evolution of a Linear Model
 
-###Regression with Hybrid Step-Wise Abroach 
+###Regression with Hybrid Step-Wise Approach 
 
 ```{r, results="hide"}
 fit <- lm(final_grade~.-grade_one-grade_two,data=data)
