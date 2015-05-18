@@ -83,6 +83,7 @@ data <-  data %>%
    academic achievement) because we believed it would give us interpretable 
    results. 
 4) Summarize your results (in one or two sentences).
+   
 
 #Introduction
 
@@ -172,6 +173,8 @@ We decided to start our analysis with the a stepwise regression, optimizing the 
 
 #Results
 
+Results (about 3 pages): Describe the results you found. Make sure you quantify your findings (if inference, provide interpretation of resulting model.
+
 ##Evolution of a Linear Model
 
 ###Regression with Hybrid Step-Wise Abroach 
@@ -224,7 +227,7 @@ summary(fit3)
 
 ###Final Model
 
-Our final model has an adjusted r-squared of `r summary(fit3)$adj.r.squared`. While it is lower than the all encompassing model's adjusted r-squared of `r summary(fitall)$adj.r.squared`, it only depends on `r length(summary(fit3)$coefficients[,1])` terms instead of `r length(summary(fitall)$coefficients[,1])`. It captures `r summary(fit3)$adj.r.squared/summary(fitall)$adj.r.squared` of the variation explained by the complete model, and is far more interpretable. 
+Our final model has an adjusted R-squared of `r summary(fit3)$adj.r.squared`. While it is lower than the all-encompassing model's adjusted R-squared of `r summary(fitall)$adj.r.squared`, it only depends on `r length(summary(fit3)$coefficients[,1])` terms instead of `r length(summary(fitall)$coefficients[,1])`. It captures `r summary(fit3)$adj.r.squared/summary(fitall)$adj.r.squared` of the variation explained by the complete model, and is far more interpretable. 
 
 The final model depends on 5 predictors to predict the students final grade. While the model performs too poorly to actually predict anything, which variables and interactions were important can be meaningful.
 The 5 variables that we used were:
@@ -278,17 +281,14 @@ ggplot(data) + geom_density(aes(x=final_grade))
 
 The distribution of scores is bears a resemblance to the distribution of residuals. Both are vaguely triangular, with a peak at about 10 points, and decreasing linearly past that. Our model performs quite poorly, and appears lack sufficient data. One possible hypothesis for the varying spread is that the plethora of students receiving 10 points had a wide variety of socioeconomic backgrounds. Therefore, there were different point predictions due to the poor model, causing a wide range of residuals. As fewer students get a particular score, they grow more similar to each other in socioeconomic terms, resulting in more accurate predictions. 
 
-#This thing below takes FOREVER to run! (JUST FYI)
-
-```{r, results="hide"}
-# fit <- lm(final_grade~school*sex*mom_edu*studytime*failures*extra_school_support*
-#            wants_higher_education*weekday_alcohol_cons*health, data=data)
-# step <- stepAIC(fit, direction="both")
-# 
-# 
-# summary(step)
-```
 #Conclusion
 
 (1/2 page): Concluding remarks summarizing findings and discussing possible improvements to your analysis.
+
+The three models used in our analysis each had low adjusted R-squared values. Even the complete model had an adjusted R-squared value of only `r summary(fitall)$adj.r.squared`. This might suggest an insufficient amount of data or a more complicated relationship between the predictors and responses. 
+
+We found that a simpler model can capture much (about `r summary(fit3)$adj.r.squared/summary(fitall)$adj.r.squared`) of the variation explained by the complete model. Furthermore, this simpler model has the benefit of more interpretable results. 
+
+The heteroscedasticity of residuals suggests that we could try to transform the `final_grade` response using a concave function such as `sqrt()` or `log()`. However, such a transformation would make comparisons between other models more difficult. 
+Other things to talk about are: how could we improve it (gather additional data, derive new features from existing data, using non-linear transformations, etc. etc.)
 
