@@ -166,8 +166,7 @@ The variables that we had available to us were as follows:
 * __grade_two__ - second period Portuguese grade (from 0 to 20)
 * __final_grade__ - final Portuguese grade (from 0 to 20)
 
-As you can see, there are actually three target variables we could use as our response measure (grade one, grade two, and final grade). In our exploratory data analysis section of the project however, we found that these three response variables had very high correlations between each other (all above 0.82). Consequently, we decided to only use final grade as our response AND made sure not to use grade one or grade two in
-our subsequent model. 
+As you can see, there are actually three target variables we could use as our response measure (grade one, grade two, and final grade). In our exploratory data analysis section of the project however, we found that these three response variables had very high correlations between each other (all above 0.82). Consequently, we decided to only use final grade as our response AND made sure not to use grade one or grade two in our subsequent model. 
 
 We decided to start our analysis with the a stepwise regression, optimizing the  Akaike information criterion (AIC) with a function stepAIC from the MASS library. This function starts off with a model, in this case, a linear model with all the depedent variables with no interations, and iteratively adds and removes predictors as it tries to improve the AIC. 
 
