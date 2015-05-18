@@ -241,45 +241,52 @@ grid.arrange(cschool, csex, cage, curban_rural, cfam_size, cparents_cohabit, cmo
 
 
 
+```
 
-pschool = data2 %>% ggplot(aes(x=school, y=final_grade)) + geom_point(alpha=0.1) + geom_jitter(position = position_jitter(width = .1, height=0))
-psex = data2 %>% ggplot(aes(x=sex, y=final_grade)) + geom_point(alpha=0.1) + geom_jitter(position = position_jitter(width = .1, height=0))
-page = data2 %>% ggplot(aes(x=age, y=final_grade)) + geom_point(alpha=0.1) + geom_jitter(position = position_jitter(width = .1, height=0))
-purban_rural = data2 %>% ggplot(aes(x=urban_rural, y=final_grade)) + geom_point(alpha=0.1) + geom_jitter(position = position_jitter(width = .1, height=0))
-pfam_size = data2 %>% ggplot(aes(x=fam_size, y=final_grade)) + geom_point(alpha=0.1) + geom_jitter(position = position_jitter(width = .1, height=0))
-pparents_cohabit = data2 %>% ggplot(aes(x=parents_cohabit, y=final_grade)) + geom_point(alpha=0.1) + geom_jitter(position = position_jitter(width = .1, height=0))
-pmom_edu = data2 %>% ggplot(aes(x=mom_edu, y=final_grade)) + geom_point(alpha=0.1) + geom_jitter(position = position_jitter(width = .1, height=0))
-pdad_edu = data2 %>% ggplot(aes(x=dad_edu, y=final_grade)) + geom_point(alpha=0.1) + geom_jitter(position = position_jitter(width = .1, height=0))
-pmom_job = data2 %>% ggplot(aes(x=mom_job, y=final_grade)) + geom_point(alpha=0.1) + geom_jitter(position = position_jitter(width = .1, height=0))
-pdad_job = data2 %>% ggplot(aes(x=dad_job, y=final_grade)) + geom_point(alpha=0.1) + geom_jitter(position = position_jitter(width = .1, height=0))
-pschool_reason = data2 %>% ggplot(aes(x=school_reason, y=final_grade)) + geom_point(alpha=0.1) + geom_jitter(position = position_jitter(width = .1, height=0))
-pstudent_guardian = data2 %>% ggplot(aes(x=student_guardian, y=final_grade)) + geom_point(alpha=0.1) + geom_jitter(position = position_jitter(width = .1, height=0))
-ptraveltime = data2 %>% ggplot(aes(x=traveltime, y=final_grade)) + geom_point(alpha=0.1) + geom_jitter(position = position_jitter(width = .1, height=0))
-pstudytime = data2 %>% ggplot(aes(x=studytime, y=final_grade)) + geom_point(alpha=0.1) + geom_jitter(position = position_jitter(width = .1, height=0))
-pfailures = data2 %>% ggplot(aes(x=failures, y=final_grade)) + geom_point(alpha=0.1) + geom_jitter(position = position_jitter(width = .1, height=0))
-pextra_school_support = data2 %>% ggplot(aes(x=extra_school_support, y=final_grade)) + geom_point(alpha=0.1) + geom_jitter(position = position_jitter(width = .1, height=0))
-pfam_edu_support = data2 %>% ggplot(aes(x=fam_edu_support, y=final_grade)) + geom_point(alpha=0.1) + geom_jitter(position = position_jitter(width = .1, height=0))
-ppaid_extra_classes = data2 %>% ggplot(aes(x=paid_extra_classes, y=final_grade)) + geom_point(alpha=0.1) + geom_jitter(position = position_jitter(width = .1, height=0))
-pextracurricular_activities = data2 %>% ggplot(aes(x=extracurricular_activities, y=final_grade)) + geom_point(alpha=0.1) + geom_jitter(position = position_jitter(width = .1, height=0))
-pattended_nursery = data2 %>% ggplot(aes(x=attended_nursery, y=final_grade)) + geom_point(alpha=0.1) + geom_jitter(position = position_jitter(width = .1, height=0))
-pwants_higher_education = data2 %>% ggplot(aes(x=wants_higher_education, y=final_grade)) + geom_point(alpha=0.1) + geom_jitter(position = position_jitter(width = .1, height=0))
-pinternet = data2 %>% ggplot(aes(x=internet, y=final_grade)) + geom_point(alpha=0.1) + geom_jitter(position = position_jitter(width = .1, height=0))
-phas_romantic_partner = data2 %>% ggplot(aes(x=has_romantic_partner, y=final_grade)) + geom_point(alpha=0.1) + geom_jitter(position = position_jitter(width = .1, height=0))
-pfamily_relationship = data2 %>% ggplot(aes(x=family_relationship, y=final_grade)) + geom_point(alpha=0.1) + geom_jitter(position = position_jitter(width = .1, height=0))
-pfreetime = data2 %>% ggplot(aes(x=freetime, y=final_grade)) + geom_point(alpha=0.1) + geom_jitter(position = position_jitter(width = .1, height=0))
-pgoing_out_amount = data2 %>% ggplot(aes(x=going_out_amount, y=final_grade)) + geom_point(alpha=0.1) + geom_jitter(position = position_jitter(width = .1, height=0))
-pweekday_alcohol_cons = data2 %>% ggplot(aes(x=weekday_alcohol_cons, y=final_grade)) + geom_point(alpha=0.1) + geom_jitter(position = position_jitter(width = .1, height=0))
-pweekend_alcohol_cons = data2 %>% ggplot(aes(x=weekend_alcohol_cons, y=final_grade)) + geom_point(alpha=0.1) + geom_jitter(position = position_jitter(width = .1, height=0))
-phealth = data2 %>% ggplot(aes(x=health, y=final_grade)) + geom_point(alpha=0.1) + geom_jitter(position = position_jitter(width = .1, height=0))
-pabsences = data2 %>% ggplot(aes(x=absences, y=final_grade)) + geom_point(alpha=0.1) + geom_jitter(position = position_jitter(width = .1, height=0))
+
+
+###Grade vs Variable with Alpha & Jitter
+
+```{r}
+pschool = data2 %>% ggplot(aes(x=school, y=final_grade)) + geom_point(alpha=0.1) + geom_jitter(position = position_jitter(width = .1, height=0), alpha=0.06)
+psex = data2 %>% ggplot(aes(x=sex, y=final_grade)) + geom_point(alpha=0.1) + geom_jitter(position = position_jitter(width = .1, height=0), alpha=0.06)
+page = data2 %>% ggplot(aes(x=age, y=final_grade)) + geom_point(alpha=0.1) + geom_jitter(position = position_jitter(width = .1, height=0), alpha=0.06)
+purban_rural = data2 %>% ggplot(aes(x=urban_rural, y=final_grade)) + geom_point(alpha=0.1) + geom_jitter(position = position_jitter(width = .1, height=0), alpha=0.06)
+pfam_size = data2 %>% ggplot(aes(x=fam_size, y=final_grade)) + geom_point(alpha=0.1) + geom_jitter(position = position_jitter(width = .1, height=0), alpha=0.06)
+pparents_cohabit = data2 %>% ggplot(aes(x=parents_cohabit, y=final_grade)) + geom_point(alpha=0.1) + geom_jitter(position = position_jitter(width = .1, height=0), alpha=0.06)
+pmom_edu = data2 %>% ggplot(aes(x=mom_edu, y=final_grade)) + geom_point(alpha=0.1) + geom_jitter(position = position_jitter(width = .1, height=0), alpha=0.06)
+pdad_edu = data2 %>% ggplot(aes(x=dad_edu, y=final_grade)) + geom_point(alpha=0.1) + geom_jitter(position = position_jitter(width = .1, height=0), alpha=0.06)
+pmom_job = data2 %>% ggplot(aes(x=mom_job, y=final_grade)) + geom_point(alpha=0.1) + geom_jitter(position = position_jitter(width = .1, height=0), alpha=0.06)
+pdad_job = data2 %>% ggplot(aes(x=dad_job, y=final_grade)) + geom_point(alpha=0.1) + geom_jitter(position = position_jitter(width = .1, height=0), alpha=0.06)
+pschool_reason = data2 %>% ggplot(aes(x=school_reason, y=final_grade)) + geom_point(alpha=0.1) + geom_jitter(position = position_jitter(width = .1, height=0), alpha=0.06)
+pstudent_guardian = data2 %>% ggplot(aes(x=student_guardian, y=final_grade)) + geom_point(alpha=0.1) + geom_jitter(position = position_jitter(width = .1, height=0), alpha=0.06)
+ptraveltime = data2 %>% ggplot(aes(x=traveltime, y=final_grade)) + geom_point(alpha=0.1) + geom_jitter(position = position_jitter(width = .1, height=0), alpha=0.06)
+pstudytime = data2 %>% ggplot(aes(x=studytime, y=final_grade)) + geom_point(alpha=0.1) + geom_jitter(position = position_jitter(width = .1, height=0), alpha=0.06)
+pfailures = data2 %>% ggplot(aes(x=failures, y=final_grade)) + geom_point(alpha=0.1) + geom_jitter(position = position_jitter(width = .1, height=0), alpha=0.06)
+pextra_school_support = data2 %>% ggplot(aes(x=extra_school_support, y=final_grade)) + geom_point(alpha=0.1) + geom_jitter(position = position_jitter(width = .1, height=0), alpha=0.06)
+pfam_edu_support = data2 %>% ggplot(aes(x=fam_edu_support, y=final_grade)) + geom_point(alpha=0.1) + geom_jitter(position = position_jitter(width = .1, height=0), alpha=0.06)
+ppaid_extra_classes = data2 %>% ggplot(aes(x=paid_extra_classes, y=final_grade)) + geom_point(alpha=0.1) + geom_jitter(position = position_jitter(width = .1, height=0), alpha=0.06)
+pextracurricular_activities = data2 %>% ggplot(aes(x=extracurricular_activities, y=final_grade)) + geom_point(alpha=0.1) + geom_jitter(position = position_jitter(width = .1, height=0), alpha=0.06)
+pattended_nursery = data2 %>% ggplot(aes(x=attended_nursery, y=final_grade)) + geom_point(alpha=0.1) + geom_jitter(position = position_jitter(width = .1, height=0), alpha=0.06)
+pwants_higher_education = data2 %>% ggplot(aes(x=wants_higher_education, y=final_grade)) + geom_point(alpha=0.1) + geom_jitter(position = position_jitter(width = .1, height=0), alpha=0.06)
+pinternet = data2 %>% ggplot(aes(x=internet, y=final_grade)) + geom_point(alpha=0.1) + geom_jitter(position = position_jitter(width = .1, height=0), alpha=0.06)
+phas_romantic_partner = data2 %>% ggplot(aes(x=has_romantic_partner, y=final_grade)) + geom_point(alpha=0.1) + geom_jitter(position = position_jitter(width = .1, height=0), alpha=0.06)
+pfamily_relationship = data2 %>% ggplot(aes(x=family_relationship, y=final_grade)) + geom_point(alpha=0.1) + geom_jitter(position = position_jitter(width = .1, height=0), alpha=0.06)
+pfreetime = data2 %>% ggplot(aes(x=freetime, y=final_grade)) + geom_point(alpha=0.1) + geom_jitter(position = position_jitter(width = .1, height=0), alpha=0.06)
+pgoing_out_amount = data2 %>% ggplot(aes(x=going_out_amount, y=final_grade)) + geom_point(alpha=0.1) + geom_jitter(position = position_jitter(width = .1, height=0), alpha=0.06)
+pweekday_alcohol_cons = data2 %>% ggplot(aes(x=weekday_alcohol_cons, y=final_grade)) + geom_point(alpha=0.1) + geom_jitter(position = position_jitter(width = .1, height=0), alpha=0.06)
+pweekend_alcohol_cons = data2 %>% ggplot(aes(x=weekend_alcohol_cons, y=final_grade)) + geom_point(alpha=0.1) + geom_jitter(position = position_jitter(width = .1, height=0), alpha=0.06)
+phealth = data2 %>% ggplot(aes(x=health, y=final_grade)) + geom_point(alpha=0.1) + geom_jitter(position = position_jitter(width = .1, height=0), alpha=0.06)
+pabsences = data2 %>% ggplot(aes(x=absences, y=final_grade)) + geom_point(alpha=0.1) + geom_jitter(position = position_jitter(width = .1, height=0), alpha=0.06)
 
 
 grid.arrange(pschool, psex, page, purban_rural, pfam_size, pparents_cohabit, pmom_edu, pdad_edu, pmom_job, pdad_job, pschool_reason, pstudent_guardian, ptraveltime, pstudytime, pfailures, pextra_school_support, pfam_edu_support, ppaid_extra_classes, pextracurricular_activities, pattended_nursery, pwants_higher_education, pinternet, phas_romantic_partner, pfamily_relationship, pfreetime, pgoing_out_amount, pweekday_alcohol_cons, pweekend_alcohol_cons, phealth, pabsences)
 #final grade vs each variable, with some horizontal jitter
 #p for points
+```
 
 
-
+```{r}
 ggplot(data_ffit_res, aes(y = final_grade, x = fitted)) + geom_point(alpha=0.2) + geom_abline(intercept=0, slope=1, colour="red")
 #fitted vs final grade
 #fitted data vs final grade, y=x line
